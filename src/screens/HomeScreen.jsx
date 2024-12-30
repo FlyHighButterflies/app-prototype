@@ -1,27 +1,33 @@
-import React, { cloneitem, useState, useEffect } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import dummyData from "constants/DummyData.json";
 import ExpenseItem from "components/ExpenseItem";
 
-function HomeScreen() {
+function HomeScreen({ navigation }) {
   const [transactions, setTransactions] = useState(dummyData.expenseList);
   const [recentTransactions, setRecentTransactions] = useState(
     transactions.slice(-5)
   );
   const [balance, setBalance] = useState(8000.0);
   const [totalExpense, setTotalExpense] = useState(0.0);
+  // const [isAddExpense, setIsAddExpense] = useState(true);
 
   useEffect(() => {
     const total = transactions.reduce((total, item) => total + item.amount, 0);
-    setTotalExpense(prevTotal => total);
-    setBalance(prevBalance => 8000 - total)
+    setTotalExpense((prevTotal) => total);
+    setBalance((prevBalance) => 8000 - total);
     setRecentTransactions(transactions.slice(-5));
   }, [transactions]);
 
   return (
     <SafeAreaView style={style.screenContainer}>
-      {/* <ScrollView> */}
       <View style={style.dashboard}>
         <View style={style.balanceContainer}>
           <Text>Total Balance</Text>
@@ -32,9 +38,24 @@ function HomeScreen() {
           <Text>${totalExpense}</Text>
         </View>
       </View>
+      <TouchableOpacity style={style.addExpenseButton}>
+        <Text>Add Expense</Text>
+      </TouchableOpacity>
+      {/* <Modal visible={isAddExpense} transparent={true}>
+        <View style={style.addExpenseModalBackground}>
+          <View style={style.addExpenseModalContainer}>
+            <Text>Hello from Modal</Text>
+          </View>
+        </View>
+      </Modal> */}
       <View style={style.transactionsContainer}>
         <Text>Recent Transactions</Text>
-        <Text>View All</Text>
+        <TouchableOpacity
+          style={style.viewContainer}
+          onPressOut={() => navigation.navigate("ExpenseList")}
+        >
+          <Text>View All</Text>
+        </TouchableOpacity>
       </View>
       <View
         style={style.expenseListContainer}
@@ -52,9 +73,7 @@ function HomeScreen() {
             />
           );
         })}
-        {/* <Text>Hello</Text> */}
       </View>
-      {/* </ScrollView> */}
     </SafeAreaView>
   );
 }
@@ -62,7 +81,7 @@ function HomeScreen() {
 const style = StyleSheet.create({
   screenContainer: {
     padding: 20,
-    // borderWidth: 1,
+    borderWidth: 1,
     height: "100%",
   },
   dashboard: {
@@ -70,7 +89,7 @@ const style = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 20,
-    // borderWidth: 1,
+    borderWidth: 1,
     borderColor: "green",
   },
   balanceContainer: {
@@ -86,15 +105,36 @@ const style = StyleSheet.create({
     alignItems: "center",
     gap: 5,
   },
+  addExpenseButton: {
+    height: 30,
+    borderWidth: 1,
+    marginTop: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  addExpenseModalBackground: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
+  },
+  addExpenseModalContainer: {
+    width: 200,
+    height: 200,
+    backgroundColor: "white",
+  },
   transactionsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     // borderWidth: 1,
-    marginTop: 20,
+    marginTop: 10,
+  },
+  viewContainer: {
+    borderWidth: 1,
   },
   expenseListContainer: {
     flexDirection: "column-reverse",
-    marginTop: 10,
+    // marginTop: 10,
     // borderWidth: 1,
     borderColor: "red",
   },

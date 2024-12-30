@@ -21,6 +21,7 @@ const style = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     padding: 10,
+    borderWidth: 1,
   },
   amountContainer: {
     justifyContent: "center",
