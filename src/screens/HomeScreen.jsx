@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import {
   Modal,
+  ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -17,13 +19,13 @@ function HomeScreen({ navigation }) {
   );
   const [balance, setBalance] = useState(8000.0);
   const [totalExpense, setTotalExpense] = useState(0.0);
-  // const [isAddExpense, setIsAddExpense] = useState(true);
+  const [isAddExpense, setIsAddExpense] = useState(false);
 
   useEffect(() => {
     const total = transactions.reduce((total, item) => total + item.amount, 0);
-    setTotalExpense((prevTotal) => total);
-    setBalance((prevBalance) => 8000 - total);
-    setRecentTransactions(transactions.slice(-5));
+    setTotalExpense(total);
+    setBalance(8000 - total);
+    setRecentTransactions(transactions.slice(-8));
   }, [transactions]);
 
   return (
@@ -38,16 +40,44 @@ function HomeScreen({ navigation }) {
           <Text>${totalExpense}</Text>
         </View>
       </View>
-      <TouchableOpacity style={style.addExpenseButton}>
+      <TouchableOpacity
+        style={style.addExpenseButton}
+        onPressOut={() => {
+          setIsAddExpense(true);
+        }}
+      >
         <Text>Add Expense</Text>
       </TouchableOpacity>
-      {/* <Modal visible={isAddExpense} transparent={true}>
+      <Modal visible={isAddExpense} transparent={true}>
         <View style={style.addExpenseModalBackground}>
           <View style={style.addExpenseModalContainer}>
-            <Text>Hello from Modal</Text>
+            <View style={style.addExpenseModalExitContainer}>
+              <TouchableOpacity
+                onPressOut={() => {
+                  setIsAddExpense(false);
+                }}
+              >
+                <Text style={style.addExpenseModalExitText}>Exit</Text>
+              </TouchableOpacity>
+            </View>
+            <View>
+              <Text>Category</Text>
+              <TextInput style={style.addExpenseInputContainer} />
+              <Text>Item</Text>
+              <TextInput style={style.addExpenseInputContainer} />
+              <Text>Date</Text>
+              <TextInput style={style.addExpenseInputContainer} />
+              <Text>Amount</Text>
+              <TextInput style={style.addExpenseInputContainer} />
+            </View>
+            <View style={style.addExpenseModalButtonContainer}>
+              <TouchableOpacity style={style.addExpenseButton}>
+                <Text>Add</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </Modal> */}
+      </Modal>
       <View style={style.transactionsContainer}>
         <Text>Recent Transactions</Text>
         <TouchableOpacity
@@ -57,9 +87,12 @@ function HomeScreen({ navigation }) {
           <Text>View All</Text>
         </TouchableOpacity>
       </View>
-      <View
+      <ScrollView
         style={style.expenseListContainer}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          flexDirection: "column-reverse",
+        }}
       >
         {recentTransactions.map((item, index) => {
           return (
@@ -73,7 +106,7 @@ function HomeScreen({ navigation }) {
             />
           );
         })}
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -119,9 +152,27 @@ const style = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.4)",
   },
   addExpenseModalContainer: {
-    width: 200,
-    height: 200,
+    padding: 20,
+    width: 300,
+    height: 350,
     backgroundColor: "white",
+  },
+  addExpenseModalExitContainer: {
+    alignItems: "flex-end",
+  },
+  addExpenseModalExitText: {
+    borderWidth: 1,
+  },
+  addExpenseInputContainer: {
+    borderWidth: 1,
+    height: 40,
+    padding: 10,
+  },
+  addExpenseModalButtonContainer: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: "orange",
+    justifyContent: "flex-end",
   },
   transactionsContainer: {
     flexDirection: "row",
@@ -133,8 +184,8 @@ const style = StyleSheet.create({
     borderWidth: 1,
   },
   expenseListContainer: {
-    flexDirection: "column-reverse",
-    // marginTop: 10,
+    // flexDirection: "column-reverse",
+    marginTop: 10,
     // borderWidth: 1,
     borderColor: "red",
   },

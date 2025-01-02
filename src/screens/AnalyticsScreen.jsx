@@ -4,10 +4,10 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 function AnalyticsScreen() {
   return (
-    <SafeAreaView>
-        <Text>Hello from Analytics Screen</Text>
+    <SafeAreaView style={{ height: "100%", justifyContent: "center", alignItems: "center" }}>
+      <Text>Hello from Analytics Screen</Text>
     </SafeAreaView>
-  )
+  );
 }
 
 export default AnalyticsScreen
