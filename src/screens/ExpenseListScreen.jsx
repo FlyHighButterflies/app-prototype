@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import dummyData from "constants/DummyData.json";
 import ExpenseItem from "components/ExpenseItem";
+import { useData } from "context/DataContext";
 
 function ExpenseListScreen({ navigation }) {
+
+  const [data, setData] = useState(useData())
+
   return (
     <SafeAreaView style={style.screenContainer}>
       <View style={style.headerContainer}>
@@ -19,7 +22,7 @@ function ExpenseListScreen({ navigation }) {
         style={style.expenseListContainer}
         showsVerticalScrollIndicator={false}
       >
-        {dummyData.expenseList.map((item, index) => {
+        {data.map((item, index) => {
           return (
             <ExpenseItem
               style={style.expenseItemContainer}
@@ -57,10 +60,11 @@ const style = StyleSheet.create({
     fontSize: 20,
   },
   expenseListContainer: {
+    marginTop: 10,
     // borderWidth: 1,
   },
   expenseItemContainer: {
-    marginTop: 10,
+    marginBottom: 10,
     // borderWidth: 1,
   },
 });

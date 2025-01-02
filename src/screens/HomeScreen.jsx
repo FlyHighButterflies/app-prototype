@@ -9,15 +9,16 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import dummyData from "constants/DummyData.json";
 import ExpenseItem from "components/ExpenseItem";
+import { useData } from "context/DataContext";
 
 function HomeScreen({ navigation }) {
-  const [transactions, setTransactions] = useState(dummyData.expenseList);
+  const [transactions, setTransactions] = useState(useData());
   const [recentTransactions, setRecentTransactions] = useState(
     transactions.slice(-5)
   );
-  const [balance, setBalance] = useState(8000.0);
+  const [budget, setBudget] = useState(8000.0)
+  const [balance, setBalance] = useState(budget);
   const [totalExpense, setTotalExpense] = useState(0.0);
   const [isAddExpense, setIsAddExpense] = useState(false);
 
@@ -184,13 +185,12 @@ const style = StyleSheet.create({
     borderWidth: 1,
   },
   expenseListContainer: {
-    // flexDirection: "column-reverse",
     marginTop: 10,
     // borderWidth: 1,
     borderColor: "red",
   },
   expenseItemContainer: {
-    marginTop: 10,
+    marginBottom: 10,
     // borderWidth: 1,
   },
 });
