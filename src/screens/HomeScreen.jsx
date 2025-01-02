@@ -113,7 +113,7 @@ function HomeScreen({ navigation }) {
 
 const style = StyleSheet.create({
   screenContainer: {
-    padding: 20,
+    padding: 15,
     borderWidth: 1,
     height: "100%",
   },

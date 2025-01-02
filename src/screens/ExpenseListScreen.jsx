@@ -38,7 +38,7 @@ function ExpenseListScreen({ navigation }) {
 
 const style = StyleSheet.create({
   screenContainer: {
-    padding: 10,
+    padding: 15,
     height: "100%",
   },
   headerContainer: {
