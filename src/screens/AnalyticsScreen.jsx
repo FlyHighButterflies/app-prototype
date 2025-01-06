@@ -1,3 +1,6 @@
+import ExpenseItem from "components/ExpenseItem";
+import { useData } from "context/DataContext";
+import { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { CartesianChart, Line } from "victory-native";
@@ -8,6 +11,7 @@ const DATA = Array.from({ length: 31 }, (_, i) => ({
 }));
 
 function AnalyticsScreen({ navigation }) {
+
   return (
     <SafeAreaView style={style.screenContainer}>
       <View style={style.headerContainer}>
@@ -24,7 +28,7 @@ function AnalyticsScreen({ navigation }) {
         </View>
       </View>
       <View style={{ justifyContent: "center", alignItems: "center" }}>
-        <View style={{ height: 300, width: "100%" }}>
+        <View style={style.chartContainer}>
           <CartesianChart data={DATA} xKey="day" yKeys={["highTmp"]}>
             {({ points }) => (
               <Line points={points.highTmp} color="red" strokeWidth={3} />
@@ -53,6 +57,12 @@ const style = {
   headerText: {
     fontWeight: "bold",
     fontSize: 20,
+  },
+  chartContainer: {
+    height: 300,
+    width: "100%",
+    borderWidth: 1,
+    marginTop: 15,
   },
 };
 

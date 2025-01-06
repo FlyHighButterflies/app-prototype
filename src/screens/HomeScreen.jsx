@@ -17,7 +17,7 @@ function HomeScreen({ navigation }) {
   const [recentTransactions, setRecentTransactions] = useState(
     transactions.slice(-5)
   );
-  const [budget, setBudget] = useState(8000.0)
+  const [budget, setBudget] = useState(8000.0);
   const [balance, setBalance] = useState(budget);
   const [totalExpense, setTotalExpense] = useState(0.0);
   const [isAddExpense, setIsAddExpense] = useState(false);
@@ -142,7 +142,7 @@ const style = StyleSheet.create({
   addExpenseButton: {
     height: 30,
     borderWidth: 1,
-    marginTop: 10,
+    marginTop: 15,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -153,7 +153,7 @@ const style = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.4)",
   },
   addExpenseModalContainer: {
-    padding: 20,
+    padding: 15,
     width: 300,
     height: 350,
     backgroundColor: "white",
@@ -179,7 +179,7 @@ const style = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     // borderWidth: 1,
-    marginTop: 10,
+    marginTop: 15,
   },
   viewContainer: {
     borderWidth: 1,
