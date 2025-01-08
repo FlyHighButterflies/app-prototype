@@ -47,7 +47,7 @@ function HomeScreen({ navigation }) {
           setIsAddExpense(true);
         }}
       >
-        <Text>Add Expense</Text>
+        <Text style={{ color: 'white'}}>Add Expense</Text>
       </TouchableOpacity>
       <Modal visible={isAddExpense} transparent={true}>
         <View style={style.addExpenseModalBackground}>
@@ -73,7 +73,7 @@ function HomeScreen({ navigation }) {
             </View>
             <View style={style.addExpenseModalButtonContainer}>
               <TouchableOpacity style={style.addExpenseButton}>
-                <Text>Add</Text>
+                <Text style={{ color: 'white'}}>Add</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -123,9 +123,10 @@ const style = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 20,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: "green",
     borderRadius: 10,
+    backgroundColor: "rgba(0, 255, 0, 0.3)",
   },
   balanceContainer: {
     justifyContent: "center",
@@ -147,6 +148,7 @@ const style = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
+    backgroundColor: "green",
   },
   addExpenseModalBackground: {
     justifyContent: "center",
