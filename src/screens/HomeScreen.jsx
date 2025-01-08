@@ -125,6 +125,7 @@ const style = StyleSheet.create({
     gap: 20,
     borderWidth: 1,
     borderColor: "green",
+    borderRadius: 10,
   },
   balanceContainer: {
     justifyContent: "center",
@@ -145,6 +146,7 @@ const style = StyleSheet.create({
     marginTop: 15,
     justifyContent: "center",
     alignItems: "center",
+    borderRadius: 10,
   },
   addExpenseModalBackground: {
     justifyContent: "center",
@@ -157,17 +159,21 @@ const style = StyleSheet.create({
     width: 300,
     height: 350,
     backgroundColor: "white",
+    borderRadius: 10,
   },
   addExpenseModalExitContainer: {
     alignItems: "flex-end",
   },
   addExpenseModalExitText: {
     borderWidth: 1,
+    padding: 5,
+    borderRadius: 5,
   },
   addExpenseInputContainer: {
     borderWidth: 1,
     height: 40,
     padding: 10,
+    borderRadius: 5,
   },
   addExpenseModalButtonContainer: {
     flex: 1,
@@ -183,6 +189,8 @@ const style = StyleSheet.create({
   },
   viewContainer: {
     borderWidth: 1,
+    padding: 5,
+    borderRadius: 5,
   },
   expenseListContainer: {
     marginTop: 10,
@@ -191,6 +199,7 @@ const style = StyleSheet.create({
   },
   expenseItemContainer: {
     marginBottom: 10,
+    borderRadius: 10,
     // borderWidth: 1,
   },
 });
