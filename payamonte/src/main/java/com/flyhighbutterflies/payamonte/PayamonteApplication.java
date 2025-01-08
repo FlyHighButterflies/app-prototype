@@ -9,5 +9,4 @@ public class PayamonteApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(PayamonteApplication.class, args);
 	}
-
 }
