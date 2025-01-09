@@ -126,7 +126,7 @@ const style = StyleSheet.create({
     borderWidth: 2,
     borderColor: "green",
     borderRadius: 10,
-    backgroundColor: "rgba(0, 255, 0, 0.3)",
+    backgroundColor: "rgba(0, 255, 0, 0.4)",
   },
   balanceContainer: {
     justifyContent: "center",
