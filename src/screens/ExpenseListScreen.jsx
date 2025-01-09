@@ -9,9 +9,11 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import ExpenseItem from "components/ExpenseItem";
 import { useData } from "context/DataContext";
+import AddEditExpenseModal from "components/AddEditExpenseModal";
 
 function ExpenseListScreen({ navigation }) {
   const [data, setData] = useState(useData());
+  const [isEditing, setIsEditing] = useState(false);
 
   return (
     <SafeAreaView style={style.screenContainer}>
@@ -41,17 +43,22 @@ function ExpenseListScreen({ navigation }) {
               amount={item.amount}
               category={item.category}
               date={item.date}
+              editable={true}
+              setIsEditing={setIsEditing}
             />
           );
         })}
       </ScrollView>
+
+      <AddEditExpenseModal isEditing={isEditing} setIsEditing={setIsEditing} />
+
     </SafeAreaView>
   );
 }
 
 const style = StyleSheet.create({
   screenContainer: {
-    padding: 15,
+    padding: 20,
     height: "100%",
   },
   headerContainer: {

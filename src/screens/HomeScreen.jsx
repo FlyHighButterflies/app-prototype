@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
 import {
-  Modal,
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ExpenseItem from "components/ExpenseItem";
 import { useData } from "context/DataContext";
+import AddEditExpenseModal from "components/AddEditExpenseModal";
 
 function HomeScreen({ navigation }) {
   const [transactions, setTransactions] = useState(useData());
@@ -49,36 +48,12 @@ function HomeScreen({ navigation }) {
       >
         <Text>Add Expense</Text>
       </TouchableOpacity>
-      <Modal visible={isAddExpense} transparent={true}>
-        <View style={style.addExpenseModalBackground}>
-          <View style={style.addExpenseModalContainer}>
-            <View style={style.addExpenseModalExitContainer}>
-              <TouchableOpacity
-                onPressOut={() => {
-                  setIsAddExpense(false);
-                }}
-              >
-                <Text style={style.addExpenseModalExitText}>Exit</Text>
-              </TouchableOpacity>
-            </View>
-            <View>
-              <Text>Category</Text>
-              <TextInput style={style.addExpenseInputContainer} />
-              <Text>Item</Text>
-              <TextInput style={style.addExpenseInputContainer} />
-              <Text>Date</Text>
-              <TextInput style={style.addExpenseInputContainer} />
-              <Text>Amount</Text>
-              <TextInput style={style.addExpenseInputContainer} />
-            </View>
-            <View style={style.addExpenseModalButtonContainer}>
-              <TouchableOpacity style={style.addExpenseButton}>
-                <Text>Add</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+
+      <AddEditExpenseModal
+        isEditing={isAddExpense}
+        setIsEditing={setIsAddExpense}
+      />
+
       <View style={style.transactionsContainer}>
         <Text>Recent Transactions</Text>
         <TouchableOpacity
@@ -114,7 +89,7 @@ function HomeScreen({ navigation }) {
 
 const style = StyleSheet.create({
   screenContainer: {
-    padding: 15,
+    padding: 20,
     borderWidth: 1,
     height: "100%",
   },
@@ -148,42 +123,10 @@ const style = StyleSheet.create({
     alignItems: "center",
     borderRadius: 10,
   },
-  addExpenseModalBackground: {
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.4)",
-  },
-  addExpenseModalContainer: {
-    padding: 15,
-    width: 300,
-    height: 350,
-    backgroundColor: "white",
-    borderRadius: 10,
-  },
-  addExpenseModalExitContainer: {
-    alignItems: "flex-end",
-  },
-  addExpenseModalExitText: {
-    borderWidth: 1,
-    padding: 5,
-    borderRadius: 5,
-  },
-  addExpenseInputContainer: {
-    borderWidth: 1,
-    height: 40,
-    padding: 10,
-    borderRadius: 5,
-  },
-  addExpenseModalButtonContainer: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: "orange",
-    justifyContent: "flex-end",
-  },
   transactionsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
     // borderWidth: 1,
     marginTop: 15,
   },
