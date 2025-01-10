@@ -1,7 +1,7 @@
 package com.flyhighbutterflies.payamonte.model;
 
 import jakarta.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "expense")
@@ -13,13 +13,13 @@ public class Expense {
     // Fields 
     private Double amount;
     private String category;
-    private Date date;
+    private LocalDate date;
     private String description;
 
     // Constructors
     public Expense() {}
 
-    public Expense(Double amount, String category, Date date, String description) {
+    public Expense(Double amount, String category, LocalDate date, String description) {
         this.amount = amount;
         this.category = category;
         this.date = date;
@@ -51,11 +51,11 @@ public class Expense {
         this.category = category;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
