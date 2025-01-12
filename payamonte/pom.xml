@@ -55,6 +55,7 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+<<<<<<< Updated upstream
 
 		<!-- Others -->
 		<dependency>
@@ -63,7 +64,15 @@
 			<version>2.0.1.Final</version>
 		</dependency>
 	</dependencies>
+=======
+>>>>>>> Stashed changes
 
+        <!-- Spring Boot Starter Security -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
