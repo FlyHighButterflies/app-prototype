@@ -9,27 +9,27 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ExpenseService {
+public class ExpenseService implements IExpenseService {
 
     @Autowired
     private ExpenseRepository expenseRepository;
 
-    // Create or Update an Expense
+    @Override
     public Expense saveExpense(Expense expense) {
         return expenseRepository.save(expense);
     }
 
-    // Get All Expenses
+    @Override
     public List<Expense> getAllExpenses() {
         return expenseRepository.findAll();
     }
 
-    // Get Expense by ID
+    @Override
     public Optional<Expense> getExpenseById(Long id) {
         return expenseRepository.findById(id);
     }
 
-    // Delete Expense by ID
+    @Override
     public void deleteExpense(Long id) {
         expenseRepository.deleteById(id);
     }
