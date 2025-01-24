@@ -2,6 +2,8 @@ package com.flyhighbutterflies.payamonte.model;
 
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDate;
 
 @Entity
@@ -19,14 +21,21 @@ public class Expense {
 
     private String description;
 
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties({"firstName", "middleName", "lastName", "email", "datetimeCreated", "expenses", "budgets"})
+    private User user;
+
     // Constructors
     public Expense() {}
 
-    public Expense(Double amount, String category, LocalDate date, String description) {
+    public Expense(Double amount, String category, LocalDate date, String description, User user) {
         this.amount = amount;
         this.category = category;
         this.date = date;
         this.description = description;
+        this.user = user;
     }
 
     // Getters and Setters
@@ -68,5 +77,13 @@ public class Expense {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

@@ -2,6 +2,8 @@ package com.flyhighbutterflies.payamonte.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "users")  // Table name in the database
@@ -26,6 +28,16 @@ public class User {
 
     @Column(name = "datetime_created", nullable = false)
     private LocalDateTime datetimeCreated;
+
+    // One user can have many expenses
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Expense> expenses;
+
+    // One user can have many budgets
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Budget> budgets;
 
     // Getters and Setters
     public Long getUserId() {
@@ -74,5 +86,23 @@ public class User {
 
     public void setDatetimeCreated(LocalDateTime datetimeCreated) {
         this.datetimeCreated = datetimeCreated;
+    }
+
+    // Getters and Setters for the list of expenses
+    public List<Expense> getExpenses() {
+        return expenses;
+    }
+
+    public void setExpenses(List<Expense> expenses) {
+        this.expenses = expenses;
+    }
+
+    // Getters and Setters for the list of budgets 
+    public List<Budget> getBudgets() {
+        return budgets;
+    }
+
+    public void setBudgets(List<Budget> budgets) {
+        this.budgets = budgets;
     }
 }
