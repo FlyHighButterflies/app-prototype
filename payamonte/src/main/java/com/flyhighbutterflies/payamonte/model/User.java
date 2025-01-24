@@ -4,20 +4,21 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "User")
+@Table(name = "users")  // Table name in the database
 public class User {
 
     @Id
-    @Column(name = "user_id", length = 16)
-    private String userId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  
+    @Column(name = "user_id", length = 16)  
+    private Long userId;  
 
-    @Column(name = "firstname", length = 128, nullable = false)
+    @Column(name = "first_name", length = 128, nullable = false)
     private String firstName;
 
-    @Column(name = "middlename", length = 128)
+    @Column(name = "middle_name", length = 128)
     private String middleName;
 
-    @Column(name = "lastname", length = 128, nullable = false)
+    @Column(name = "last_name", length = 128, nullable = false)
     private String lastName;
 
     @Column(name = "email", length = 32, unique = true, nullable = false)
@@ -26,18 +27,12 @@ public class User {
     @Column(name = "datetime_created", nullable = false)
     private LocalDateTime datetimeCreated;
 
-    @Column(name = "otp_code", length = 6)
-    private String otpCode; // OTP for authentication.
-
-    @Column(name = "otp_expiry")
-    private LocalDateTime otpExpiry; // Expiration time for OTP.
-
-    // Getters and setters
-    public String getUserId() {
+    // Getters and Setters
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
@@ -79,21 +74,5 @@ public class User {
 
     public void setDatetimeCreated(LocalDateTime datetimeCreated) {
         this.datetimeCreated = datetimeCreated;
-    }
-
-    public String getOtpCode() {
-        return otpCode;
-    }
-
-    public void setOtpCode(String otpCode) {
-        this.otpCode = otpCode;
-    }
-
-    public LocalDateTime getOtpExpiry() {
-        return otpExpiry;
-    }
-
-    public void setOtpExpiry(LocalDateTime otpExpiry) {
-        this.otpExpiry = otpExpiry;
     }
 }
