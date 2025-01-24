@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -55,5 +56,27 @@ public class UserService {
         }
 
         return "User not found!";
+    }
+
+    // Delete User (Remove user by ID)
+    public String deleteUser(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+
+        if (user.isPresent()) {
+            userRepository.deleteById(userId);
+            return "User deleted successfully!";
+        }
+
+        return "User not found!";
+    }
+
+    // Get User Details (Retrieve user by ID)
+    public Optional<User> getUserById(Long userId) {
+        return userRepository.findById(userId);
+    }
+
+    // Get All Users (Retrieve all users)
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 }
