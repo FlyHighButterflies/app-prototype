@@ -1,7 +1,7 @@
 package com.flyhighbutterflies.payamonte.controller;
 
 import com.flyhighbutterflies.payamonte.model.Expense;
-import com.flyhighbutterflies.payamonte.service.ExpenseService;
+import com.flyhighbutterflies.payamonte.service.IExpenseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,46 +15,63 @@ import java.util.Optional;
 public class ExpenseController {
 
     @Autowired
-    private ExpenseService expenseService;
+    private IExpenseService expenseService;
 
     // Create a new expense (or update if id is provided)
     @PostMapping
     public ResponseEntity<Expense> createExpense(@RequestBody Expense expense) {
-        Expense createdExpense = expenseService.saveExpense(expense);
-        return new ResponseEntity<>(createdExpense, HttpStatus.CREATED);
+        try {
+            if (expense.getUser() == null || expense.getUser().getUserId() == null) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            Expense createdExpense = expenseService.saveExpense(expense);
+            return new ResponseEntity<>(createdExpense, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // Get all expenses
     @GetMapping
     public ResponseEntity<List<Expense>> getAllExpenses() {
-        List<Expense> expenses = expenseService.getAllExpenses();
-        return new ResponseEntity<>(expenses, HttpStatus.OK);
+        try {
+            List<Expense> expenses = expenseService.getAllExpenses();
+            return new ResponseEntity<>(expenses, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // Get an expense by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Expense> getExpenseById(@PathVariable("id") Long id) {
+    public ResponseEntity<Expense> getExpenseById(@PathVariable Long id) {
         Optional<Expense> expense = expenseService.getExpenseById(id);
         return expense.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Update an existing expense by ID
+    // Update an expense
     @PutMapping("/{id}")
-    public ResponseEntity<Expense> updateExpense(@PathVariable("id") Long id, @RequestBody Expense expense) {
-        Optional<Expense> existingExpense = expenseService.getExpenseById(id);
-        if (existingExpense.isPresent()) {
-            expense.setId(id); // Set the id to ensure it's updated
+    public ResponseEntity<Expense> updateExpense(@PathVariable Long id, @RequestBody Expense expense) {
+        try {
+            if (expense.getUser() == null || expense.getUser().getUserId() == null) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            expense.setId(id);
             Expense updatedExpense = expenseService.saveExpense(expense);
             return new ResponseEntity<>(updatedExpense, HttpStatus.OK);
-        } else {
-            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    // Delete an expense by ID
+    // Delete an expense
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteExpense(@PathVariable("id") Long id) {
-        expenseService.deleteExpense(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteExpense(@PathVariable Long id) {
+        try {
+            expenseService.deleteExpense(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
