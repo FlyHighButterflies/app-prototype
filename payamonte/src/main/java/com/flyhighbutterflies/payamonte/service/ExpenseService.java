@@ -2,24 +2,35 @@ package com.flyhighbutterflies.payamonte.service;
 
 import com.flyhighbutterflies.payamonte.model.Expense;
 import com.flyhighbutterflies.payamonte.repository.ExpenseRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class ExpenseService {
+public class ExpenseService implements IExpenseService {
 
-    private final ExpenseRepository expenseRepository;
+    @Autowired
+    private ExpenseRepository expenseRepository;
 
-    public ExpenseService(ExpenseRepository expenseRepository) {
-        this.expenseRepository = expenseRepository;
+    @Override
+    public Expense saveExpense(Expense expense) {
+        return expenseRepository.save(expense);
     }
 
+    @Override
     public List<Expense> getAllExpenses() {
         return expenseRepository.findAll();
     }
 
-    public Expense saveExpense(Expense expense) {
-        return expenseRepository.save(expense);
+    @Override
+    public Optional<Expense> getExpenseById(Long id) {
+        return expenseRepository.findById(id);
+    }
+
+    @Override
+    public void deleteExpense(Long id) {
+        expenseRepository.deleteById(id);
     }
 }
