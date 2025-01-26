@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 function ExpenseItem({
   style: outerStyle,
-  item,
+  description,
   amount,
   category,
   date,
@@ -14,7 +14,7 @@ function ExpenseItem({
     <View style={{ ...outerStyle, ...style.itemContainer }}>
       <View style={style.infoContainer}>
         <View>
-          <Text>{item}</Text>
+          <Text>{description}</Text>
           <Text>{category}</Text>
           <Text>{date}</Text>
         </View>
