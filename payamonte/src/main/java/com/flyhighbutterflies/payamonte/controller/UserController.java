@@ -27,10 +27,10 @@ public class UserController {
         return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
     }
 
-    // Login (Authenticate user)
+    // Login(User Auth)
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestParam String email) {
-        String result = userService.login(email);
+    public ResponseEntity<String> login(@RequestParam String email, @RequestParam String password) {
+        String result = userService.login(email, password);
         if (result.equals("Login successful!")) {
             return new ResponseEntity<>(result, HttpStatus.OK);
         }
