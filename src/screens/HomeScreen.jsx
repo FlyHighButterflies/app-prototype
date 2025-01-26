@@ -27,7 +27,6 @@ function HomeScreen({ navigation }) {
     setBalance(8000 - total);
     setRecentTransactions(transactions.slice(-8));
   }, [transactions]);
-
   return (
     <SafeAreaView style={style.screenContainer}>
       <View style={style.dashboard}>
