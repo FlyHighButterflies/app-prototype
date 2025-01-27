@@ -8,9 +8,9 @@ const Stack = createNativeStackNavigator();
 
 function AppNavigation() {
   return (
-    <Stack.Navigator initialRouteName="App">
+    <Stack.Navigator initialRouteName="BottomNavigation">
       <Stack.Screen
-        name="App"
+        name="BottomNavigation"
         component={BottomNavigation}
         options={{ headerShown: false }}
       />

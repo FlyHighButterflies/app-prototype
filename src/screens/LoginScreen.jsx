@@ -59,7 +59,6 @@ function LoginScreen() {
           );
           const userID = res.data.find(user => user.email === email);
           setUserID(userID.userId);
-          navigation.navigate("Home");
         } catch (err) {
           setError("Failed to fetch user ID");
           console.log("Error fetching user ID:", err.message);

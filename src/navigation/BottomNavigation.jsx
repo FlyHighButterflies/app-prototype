@@ -12,11 +12,6 @@ function BottomNavigation() {
   return (
     <Tab.Navigator>
       <Tab.Screen
-        name="Login"
-        component={LoginScreen}
-        options={{ headerShown: false }}
-      />
-      <Tab.Screen
         name="Home"
         component={HomeScreen}
         options={{ headerShown: false }}
