@@ -10,6 +10,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import ExpenseItem from "components/ExpenseItem";
 import { useData } from "context/DataContext";
 import AddEditExpenseModal from "components/AddEditExpenseModal";
+import { useUserID } from "context/UserContext";
 
 function HomeScreen({ navigation }) {
   const [transactions, setTransactions] = useState(useData());
@@ -20,6 +21,9 @@ function HomeScreen({ navigation }) {
   const [balance, setBalance] = useState(budget);
   const [totalExpense, setTotalExpense] = useState(0.0);
   const [isAddExpense, setIsAddExpense] = useState(false);
+
+  // const userID = useUserID();
+  // console.log(userID);
 
   useEffect(() => {
     const total = transactions.reduce((total, item) => total + item.amount, 0);
