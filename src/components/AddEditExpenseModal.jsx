@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Modal,
   View,
@@ -6,9 +6,31 @@ import {
   Text,
   TextInput,
   StyleSheet,
+  Button,
 } from "react-native";
 
-function AddEditExpenseModal({ isEditing, setIsEditing }) {
+function AddEditExpenseModal({ isEditing, setIsEditing, onSave }) {
+  const [amount, setAmount] = useState("");
+  const [category, setCategory] = useState("");
+  const [date, setDate] = useState("");
+  const [description, setDescription] = useState("");
+
+  const handleSave = () => {
+    const newExpense = {
+      amount: parseFloat(amount),
+      category,
+      date,
+      description,
+      user: { userId: 5 }, // Assuming userId is 1 for now
+    };
+    onSave(newExpense);
+    setIsEditing(false);
+    setAmount("");
+    setCategory("");
+    setDate("");
+    setDescription("");
+  };
+
   return (
     <Modal visible={isEditing} transparent={true}>
       <View style={style.background}>
@@ -24,16 +46,41 @@ function AddEditExpenseModal({ isEditing, setIsEditing }) {
           </View>
           <View>
             <Text>Category</Text>
-            <TextInput style={style.inputContainer} />
+            <TextInput
+              placeholder="Category"
+              value={category}
+              onChangeText={setCategory}
+              style={style.inputContainer}
+            />
             <Text>Item</Text>
-            <TextInput style={style.inputContainer} />
+            <TextInput
+              placeholder="Description"
+              value={description}
+              onChangeText={setDescription}
+              style={style.inputContainer}
+            />
             <Text>Date</Text>
-            <TextInput style={style.inputContainer} />
+            <TextInput
+              placeholder="Date"
+              value={date}
+              onChangeText={setDate}
+              style={style.inputContainer}
+            />
             <Text>Amount</Text>
-            <TextInput style={style.inputContainer} />
+            <TextInput
+              placeholder="Amount"
+              value={amount}
+              onChangeText={setAmount}
+              keyboardType="numeric"
+              style={style.inputContainer}
+            />
           </View>
           <View style={style.buttonContainer}>
-            <TouchableOpacity style={style.addButton} onPressOut={() => setIsEditing(false)}>
+            <TouchableOpacity
+              style={style.addButton}
+              onPress={handleSave}
+              onPressOut={() => setIsEditing(false)}
+            >
               <Text>Add</Text>
             </TouchableOpacity>
           </View>

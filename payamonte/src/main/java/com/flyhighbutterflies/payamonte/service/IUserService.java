@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface IUserService {
     String signUp(User user);
-    String login(String email);
+    String login(String email, String password); // Updated ,now it includes password
     String updateUser(Long userId, User userDetails);
     String deleteUser(Long userId);
     Optional<User> getUserById(Long userId);

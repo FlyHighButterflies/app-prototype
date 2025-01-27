@@ -10,27 +10,83 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import ExpenseItem from "components/ExpenseItem";
 import { useData } from "context/DataContext";
 import AddEditExpenseModal from "components/AddEditExpenseModal";
-import { useUserID } from "context/UserContext";
+import axios from "axios";
 
 function HomeScreen({ navigation }) {
-  const [transactions, setTransactions] = useState(useData());
-  const [recentTransactions, setRecentTransactions] = useState(
-    transactions.slice(-5)
-  );
+  const [transactions, setTransactions] = useState([]);
+  const [recentTransactions, setRecentTransactions] = useState([]);
   const [budget, setBudget] = useState(8000.0);
   const [balance, setBalance] = useState(budget);
   const [totalExpense, setTotalExpense] = useState(0.0);
   const [isAddExpense, setIsAddExpense] = useState(false);
 
-  // const userID = useUserID();
-  // console.log(userID);
+  useEffect(() => {
+    fetchExpenses();
+  }, []);
 
   useEffect(() => {
-    const total = transactions.reduce((total, item) => total + item.amount, 0);
-    setTotalExpense(total);
-    setBalance(8000 - total);
-    setRecentTransactions(transactions.slice(-8));
+    if (Array.isArray(transactions)) {
+      const total = transactions.reduce(
+        (total, item) => total + item.amount,
+        0
+      );
+      setTotalExpense(total);
+      setBalance(budget - total);
+      setRecentTransactions(transactions.slice(-8));
+    }
   }, [transactions]);
+
+  const fetchExpenses = async () => {
+    try {
+      const response = await axios.get("http://10.0.2.2:8080/api/expenses");
+      if (Array.isArray(response.data)) {
+        setTransactions(response.data);
+        const total = response.data.reduce(
+          (total, item) => total + item.amount,
+          0
+        );
+        setTotalExpense(total);
+        setBalance(budget - total);
+      } else {
+        console.error("Error: Expected an array of transactions");
+      }
+    } catch (error) {
+      console.error("Error fetching expenses:", error);
+    }
+  };
+
+  const addExpense = async (expense) => {
+    try {
+      const response = await axios.post(
+        "http://10.0.2.2:8080/api/expenses",
+        expense
+      );
+      if (response.data) {
+        const newTransactions = [...transactions, response.data];
+        setTransactions(newTransactions);
+        const total = newTransactions.reduce(
+          (total, item) => total + item.amount,
+          0
+        );
+        setTotalExpense(total);
+        setBalance(budget - total);
+        setRecentTransactions(newTransactions.slice(-8));
+      } else {
+        console.error("Error: Expected a transaction object");
+      }
+    } catch (error) {
+      console.error(
+        "Error adding expense:",
+        error.response ? error.response.data : error.message
+      );
+      alert(
+        `Error adding expense: ${
+          error.response ? error.response.data : error.message
+        }`
+      );
+    }
+  };
+
   return (
     <SafeAreaView style={style.screenContainer}>
       <View style={style.dashboard}>
@@ -55,6 +111,7 @@ function HomeScreen({ navigation }) {
       <AddEditExpenseModal
         isEditing={isAddExpense}
         setIsEditing={setIsAddExpense}
+        onSave={addExpense}
       />
 
       <View style={style.transactionsContainer}>
@@ -78,7 +135,7 @@ function HomeScreen({ navigation }) {
             <ExpenseItem
               style={style.expenseItemContainer}
               key={index}
-              item={item.item}
+              description={item.description}
               amount={item.amount}
               category={item.category}
               date={item.date}

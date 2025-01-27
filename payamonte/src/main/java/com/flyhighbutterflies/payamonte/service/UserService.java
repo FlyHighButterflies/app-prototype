@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.List;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 
 @Service
 public class UserService implements IUserService {
@@ -15,12 +18,33 @@ public class UserService implements IUserService {
     @Autowired
     private UserRepository userRepository;
 
+    // Hash the password using SHA-256
+    private String hashPassword(String password) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] encodedHash = digest.digest(password.getBytes());
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : encodedHash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error hashing password", e);
+        }
+    }
+
     // Sign-Up (Register a new user)
     public String signUp(User user) {
-        // Check if the email already exists
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             return "Email already registered.";
         }
+
+        // Hash the password
+        user.setPassword(hashPassword(user.getPassword()));
 
         // Set the creation timestamp
         user.setDatetimeCreated(LocalDateTime.now());
@@ -29,16 +53,23 @@ public class UserService implements IUserService {
         return "Sign-Up successful!";
     }
 
-    // Login (Check if user exists and matches email)
-    public String login(String email) {
+    // Login (Check if user exists and verify password)
+    public String login(String email, String password) {
         Optional<User> user = userRepository.findByEmail(email);
 
         if (user.isPresent()) {
-            return "Login successful!";
+            // Compare hashed passwords
+            String hashedPassword = hashPassword(password);
+            if (hashedPassword.equals(user.get().getPassword())) {
+                return "Login successful!";
+            }
+            return "Invalid password!";
         }
 
         return "Invalid email or user not found!";
     }
+
+
 
     // Profile Update (Update user details)
     public String updateUser(Long userId, User userDetails) {
