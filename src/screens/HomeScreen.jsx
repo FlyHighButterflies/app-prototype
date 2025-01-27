@@ -8,9 +8,9 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ExpenseItem from "components/ExpenseItem";
-import { useData } from "context/DataContext";
 import AddEditExpenseModal from "components/AddEditExpenseModal";
 import axios from "axios";
+import { useUserID } from "context/UserContext";
 
 function HomeScreen({ navigation }) {
   const [transactions, setTransactions] = useState([]);
@@ -19,6 +19,7 @@ function HomeScreen({ navigation }) {
   const [balance, setBalance] = useState(budget);
   const [totalExpense, setTotalExpense] = useState(0.0);
   const [isAddExpense, setIsAddExpense] = useState(false);
+  const userId = useUserID();
 
   useEffect(() => {
     fetchExpenses();
@@ -32,16 +33,16 @@ function HomeScreen({ navigation }) {
       );
       setTotalExpense(total);
       setBalance(budget - total);
-      setRecentTransactions(transactions.slice(-8));
+      setRecentTransactions(transactions.slice(-10));
     }
   }, [transactions]);
 
   const fetchExpenses = async () => {
     try {
-      const response = await axios.get("http://10.0.2.2:8080/api/expenses");
-      if (Array.isArray(response.data)) {
-        setTransactions(response.data);
-        const total = response.data.reduce(
+      const response = await axios.get(`http://10.0.2.2:8080/api/users/${userId}`);
+      if (Array.isArray(response.data.expenses)) {
+        setTransactions(prevTransactions => response.data.expenses);
+        const total = transactions.reduce(
           (total, item) => total + item.amount,
           0
         );

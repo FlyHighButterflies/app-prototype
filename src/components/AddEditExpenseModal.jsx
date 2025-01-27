@@ -1,3 +1,4 @@
+import { useUserID } from "context/UserContext";
 import React, { useState } from "react";
 import {
   Modal,
@@ -6,7 +7,6 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  Button,
 } from "react-native";
 
 function AddEditExpenseModal({ isEditing, setIsEditing, onSave }) {
@@ -14,6 +14,7 @@ function AddEditExpenseModal({ isEditing, setIsEditing, onSave }) {
   const [category, setCategory] = useState("");
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
+  const userId = useUserID();
 
   const handleSave = () => {
     const newExpense = {
@@ -21,7 +22,7 @@ function AddEditExpenseModal({ isEditing, setIsEditing, onSave }) {
       category,
       date,
       description,
-      user: { userId: 5 }, // Assuming userId is 1 for now
+      user: { userId },
     };
     onSave(newExpense);
     setIsEditing(false);

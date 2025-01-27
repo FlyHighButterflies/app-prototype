@@ -3,8 +3,10 @@ import { ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Bar, CartesianChart } from "victory-native";
 import roboto from "./Roboto-Regular.ttf";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useData } from "context/DataContext";
+import { useUserID } from "context/UserContext";
+import axios from "axios";
 
 const DATA = [
   {
@@ -74,20 +76,43 @@ function CategoryItem({ style: outerStyle, category, amount }) {
 
 function AnalyticsScreen() {
   const myFont = useFont(roboto, 12);
-  const [transactions, setTransactions] = useState(useData());
-  const dataByCategory = transactions.reduce((finalObject, transaction) => {
-    const { category, amount } = transaction;
+  const [transactions, setTransactions] = useState([]);
+  const [dataByCategory, setDataByCategory] = useState([]);
+  const userId = useUserID();
+  
+  useEffect(() => {
+    fetchExpenses();
+    const byCategory = transactions.reduce((finalObject, transaction) => {
+      const { category, amount } = transaction;
 
-    if (!finalObject[category]) {
-      finalObject[category] = { total: 0, transactions: [] };
+      if (!finalObject[category]) {
+        finalObject[category] = { total: 0, transactions: [] };
+      }
+
+      finalObject[category].total += amount;
+      finalObject[category].transactions.push(transaction);
+      return finalObject;
+    }, {});
+
+    setDataByCategory(byCategory);
+  }, [transactions]);
+
+  const fetchExpenses = async () => {
+    try {
+      const response = await axios.get(
+        `http://10.0.2.2:8080/api/users/${userId}`
+      );
+      if (Array.isArray(response.data.expenses)) {
+        setTransactions(response.data.expenses);
+      } else {
+        console.error("Error: Expected an array of transactions");
+      }
+    } catch (error) {
+      console.error("Error fetching expenses:", error);
     }
+  };
 
-    finalObject[category].total += amount;
-    finalObject[category].transactions.push(transaction);
-    return finalObject;
-  }, {});
-
-  console.log(dataByCategory);
+  // console.log(dataByCategory);
 
   return (
     <SafeAreaView style={style.screenContainer}>
