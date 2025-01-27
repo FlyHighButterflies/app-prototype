@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import axios from "axios";
-import { useNavigation } from "@react-navigation/native";
 import { useSetUserID, useUserID } from "context/UserContext";
 
 function LoginScreen() {
@@ -19,7 +18,6 @@ function LoginScreen() {
   const [error, setError] = useState(null);
   const [response, setResponse] = useState(null);
 
-  const navigation = useNavigation();
   const userID = useUserID();
   const setUserID = useSetUserID();
 
@@ -29,6 +27,7 @@ function LoginScreen() {
     try {
       const params = new URLSearchParams();
       params.append("email", email);
+      params.append("password", password);
 
       const res = await axios.post(
         "http://10.0.2.2:8080/api/users/login",
@@ -37,11 +36,7 @@ function LoginScreen() {
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
         }
       );
-      setResponse((oldRes) => res.data);
-
-      // if (response === "Login successful!") {
-      //   navigation.navigate("Home");
-      // }
+      setResponse(res.data);
     } catch (err) {
       setError(err.message || "An unexpected error occurred");
       console.log(err.message);
@@ -98,7 +93,7 @@ function LoginScreen() {
         <TextInput
           style={style.inputContainer}
           value={password}
-          onChange={setPassword}
+          onChangeText={setPassword}
         />
 
         <TouchableOpacity style={style.loginButton} onPressOut={handleLogin}>
