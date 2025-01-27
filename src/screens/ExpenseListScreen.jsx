@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -8,12 +8,33 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ExpenseItem from "components/ExpenseItem";
-import { useData } from "context/DataContext";
 import AddEditExpenseModal from "components/AddEditExpenseModal";
+import { useUserID } from "context/UserContext";
+import axios from "axios";
 
 function ExpenseListScreen({ navigation }) {
-  const [data, setData] = useState(useData());
+  const [transactions, setTransactions] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
+  const userId = useUserID();
+
+  useEffect(() => {
+    fetchExpenses();
+  }, []);
+
+  const fetchExpenses = async () => {
+    try {
+      const response = await axios.get(
+        `http://10.0.2.2:8080/api/users/${userId}`
+      );
+      if (Array.isArray(response.data.expenses)) {
+        setTransactions(response.data.expenses);
+      } else {
+        console.error("Error: Expected an array of transactions");
+      }
+    } catch (error) {
+      console.error("Error fetching expenses:", error);
+    }
+  };
 
   return (
     <SafeAreaView style={style.screenContainer}>
@@ -34,12 +55,12 @@ function ExpenseListScreen({ navigation }) {
         style={style.expenseListContainer}
         showsVerticalScrollIndicator={false}
       >
-        {data.map((item, index) => {
+        {transactions.map((item, index) => {
           return (
             <ExpenseItem
               style={style.expenseItemContainer}
               key={index}
-              item={item.item}
+              description={item.description}
               amount={item.amount}
               category={item.category}
               date={item.date}
@@ -51,7 +72,6 @@ function ExpenseListScreen({ navigation }) {
       </ScrollView>
 
       <AddEditExpenseModal isEditing={isEditing} setIsEditing={setIsEditing} />
-
     </SafeAreaView>
   );
 }
