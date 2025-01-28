@@ -115,7 +115,7 @@ function HomeScreen({ navigation }) {
       </View>
       <TouchableOpacity
         style={style.addExpenseButton}
-        onPressOut={() => {
+        onPress={() => {
           setIsAddExpense(true);
         }}
       >
@@ -133,7 +133,7 @@ function HomeScreen({ navigation }) {
         <Text>Recent Transactions</Text>
         <TouchableOpacity
           style={style.viewContainer}
-          onPressOut={() => navigation.navigate("ExpenseList")}
+          onPress={() => navigation.navigate("ExpenseList")}
         >
           <Text>View All</Text>
         </TouchableOpacity>

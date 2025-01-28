@@ -9,7 +9,13 @@ import {
   StyleSheet,
 } from "react-native";
 
-function AddEditExpenseModal({ isEditing, setIsEditing, onSave, itemToEdit, buttonText }) {
+function AddEditExpenseModal({
+  isEditing,
+  setIsEditing,
+  onSave,
+  itemToEdit,
+  buttonText,
+}) {
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [date, setDate] = useState("");
@@ -25,7 +31,7 @@ function AddEditExpenseModal({ isEditing, setIsEditing, onSave, itemToEdit, butt
     }
   }, [itemToEdit]);
 
-  function handleExit(){
+  function handleExit() {
     setIsEditing(false);
     setAmount("");
     setCategory("");
@@ -54,7 +60,7 @@ function AddEditExpenseModal({ isEditing, setIsEditing, onSave, itemToEdit, butt
       <View style={style.background}>
         <View style={style.container}>
           <View style={style.exitButtonContainer}>
-            <TouchableOpacity onPressOut={handleExit}>
+            <TouchableOpacity onPress={handleExit}>
               <Text style={style.exitButtonText}>Exit</Text>
             </TouchableOpacity>
           </View>
@@ -91,8 +97,10 @@ function AddEditExpenseModal({ isEditing, setIsEditing, onSave, itemToEdit, butt
           <View style={style.buttonContainer}>
             <TouchableOpacity
               style={style.addButton}
-              onPress={handleAddOrEdit}
-              onPressOut={() => setIsEditing(false)}
+              onPressOut={() => {
+                handleAddOrEdit();
+                setIsEditing(false);
+              }}
             >
               <Text>{buttonText}</Text>
             </TouchableOpacity>

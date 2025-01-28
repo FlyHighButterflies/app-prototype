@@ -148,7 +148,8 @@ const style = StyleSheet.create({
   showPasswordIconContainer: {
     position: "absolute",
     top: 25,
-    left: 330,
+    right: 10,
+    // left: 330,
   },
   loginButton: {
     height: 40,

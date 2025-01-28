@@ -49,7 +49,7 @@ function EditOptionIcons({
   return (
     <View style={style.itemModifyContainer}>
       <TouchableOpacity
-        onPressOut={() => {
+        onPress={() => {
           setItemIdToEdit(id);
           setIsEditing(true);
           setItemToEdit(item);
@@ -58,7 +58,7 @@ function EditOptionIcons({
         <Text style={{ ...style.optionText, color: "green" }}>E</Text>
       </TouchableOpacity>
       <TouchableOpacity
-        onPressOut={() => {
+        onPress={() => {
           setIsDeleting(true);
           setItemIdToEdit(id);
         }}
