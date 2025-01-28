@@ -42,6 +42,11 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Budget> budgets;
 
+    // One user can have many notifications
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Notification> notifications;
+
     // Getters and Setters
     public Long getUserId() {
         return userId;
@@ -117,5 +122,12 @@ public class User {
         this.budgets = budgets;
     }
 
-    
+    // Getters and Setters for the list of notifications
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
+    }
 }
