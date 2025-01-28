@@ -17,12 +17,17 @@ public class BudgetController {
 
     @GetMapping
     public List<Budget> getAllBudgets() {
-        return budgetService.getAllBudgets();
+        List<Budget> budgets = budgetService.getAllBudgets();
+        // Calculate and set the remaining balance for each budget/user
+        budgets.forEach(budget -> budget.setRemainingBalance(budget.getRemainingBalance()));
+        return budgets;
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Budget> getBudgetById(@PathVariable Long id) {
         Budget budget = budgetService.getBudgetById(id);
+        // Calculate and set the remaining balance for the specific budget/user
+        budget.setRemainingBalance(budget.getRemainingBalance());
         return ResponseEntity.ok(budget);
     }
 

@@ -28,6 +28,10 @@ public class Budget {
     @Column(name = "datetime_updated")
     private LocalDateTime datetimeUpdated;
 
+    // Transient field for storing the calculated remaining balance
+    @Transient
+    private Double remainingBalance;
+
     // Constructors
     public Budget() {}
 
@@ -77,5 +81,14 @@ public class Budget {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    // Method to calculate remaining balance
+    public Double getRemainingBalance() {
+        return this.totalBalance - this.totalExpense;
+    }
+
+    public void setRemainingBalance(Double remainingBalance) {
+        this.remainingBalance = remainingBalance;
     }
 }
