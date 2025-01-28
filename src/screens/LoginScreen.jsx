@@ -10,6 +10,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import axios from "axios";
 import { useSetUserID, useUserID } from "context/UserContext";
+import Icon from "react-native-vector-icons/Ionicons";
 
 function LoginScreen() {
   const [email, setEmail] = useState("");
@@ -17,6 +18,7 @@ function LoginScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [response, setResponse] = useState(null);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const userID = useUserID();
   const setUserID = useSetUserID();
@@ -49,10 +51,8 @@ function LoginScreen() {
     if (response === "Login successful!") {
       const fetchUserID = async () => {
         try {
-          const res = await axios.get(
-            "http://10.0.2.2:8080/api/users"
-          );
-          const userID = res.data.find(user => user.email === email);
+          const res = await axios.get("http://10.0.2.2:8080/api/users");
+          const userID = res.data.find((user) => user.email === email);
           setUserID(userID.userId);
         } catch (err) {
           setError("Failed to fetch user ID");
@@ -83,18 +83,28 @@ function LoginScreen() {
           <Text style={style.loginTitle}>PiamonTrack</Text>
         </View>
 
-        <Text>Username</Text>
-        <TextInput
-          style={style.inputContainer}
-          value={email}
-          onChangeText={setEmail}
-        />
-        <Text>Password</Text>
-        <TextInput
-          style={style.inputContainer}
-          value={password}
-          onChangeText={setPassword}
-        />
+        <View style={style.emailContainer}>
+          <Text>Email</Text>
+          <TextInput
+            style={style.inputContainer}
+            value={email}
+            onChangeText={setEmail}
+          />
+        </View>
+        <View style={style.passwordContainer}>
+          <Text>Password</Text>
+          <TextInput
+            style={style.inputContainer}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!isPasswordVisible}
+          />
+          {/* <TouchableOpacity> */}
+            <Text style={style.showPasswordIconContainer}>
+              <Icon name={isPasswordVisible ? "eye-outline" : "eye-off-outline"} size={30} color="#000" onPress={() => setIsPasswordVisible(!isPasswordVisible)} />
+            </Text>
+          {/* </TouchableOpacity> */}
+        </View>
 
         <TouchableOpacity style={style.loginButton} onPressOut={handleLogin}>
           <Text style={style.loginButtonText}>Login</Text>
@@ -123,11 +133,22 @@ const style = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
   },
+  // emailContainer: {
+  //   borderWidth: 1,
+  // },
+  passwordContainer: {
+    position: "relative",
+  },
   inputContainer: {
     borderWidth: 1,
     height: 40,
     padding: 10,
     borderRadius: 5,
+  },
+  showPasswordIconContainer: {
+    position: "absolute",
+    top: 25,
+    left: 330,
   },
   loginButton: {
     height: 40,
