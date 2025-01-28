@@ -23,7 +23,7 @@ function DeleteExpenseModal({
       <View style={style.background}>
         <View style={style.container}>
           <View style={style.exitButtonContainer}>
-            <TouchableOpacity onPressOut={() => setIsDeleting(false)}>
+            <TouchableOpacity onPress={() => setIsDeleting(false)}>
               <Text style={style.exitButtonText}>Exit</Text>
             </TouchableOpacity>
           </View>
@@ -33,7 +33,7 @@ function DeleteExpenseModal({
           <View style={style.buttonContainer}>
             <TouchableOpacity
               style={style.addButton}
-              onPressOut={() => {
+              onPress={() => {
                 handleDelete();
               }}
             >
@@ -136,7 +136,7 @@ function ExpenseListScreen({ navigation }) {
       <View style={style.headerContainer}>
         <TouchableOpacity
           style={style.headerBackContainer}
-          onPressOut={() => {
+          onPress={() => {
             navigation.goBack();
           }}
         >
