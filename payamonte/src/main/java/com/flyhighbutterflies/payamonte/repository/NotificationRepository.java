@@ -1,9 +1,9 @@
 package com.flyhighbutterflies.payamonte.repository;
 
-import com.flyhighbutterflies.payamonte.model.Budget;
+import com.flyhighbutterflies.payamonte.model.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface BudgetRepository extends JpaRepository<Budget, Long> {
+public interface NotificationRepository extends JpaRepository<Notification, Long> {
 }
