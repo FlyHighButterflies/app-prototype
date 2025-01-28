@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useUserID } from "context/UserContext";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   View,
@@ -6,24 +7,41 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  Button,
 } from "react-native";
 
-function AddEditExpenseModal({ isEditing, setIsEditing, onSave }) {
+function AddEditExpenseModal({ isEditing, setIsEditing, onSave, itemToEdit, buttonText }) {
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
+  const userId = useUserID();
 
-  const handleSave = () => {
-    const newExpense = {
+  useEffect(() => {
+    if (itemToEdit) {
+      setAmount(itemToEdit.amount || "");
+      setCategory(itemToEdit.category || "");
+      setDate(itemToEdit.date || "");
+      setDescription(itemToEdit.description || "");
+    }
+  }, [itemToEdit]);
+
+  function handleExit(){
+    setIsEditing(false);
+    setAmount("");
+    setCategory("");
+    setDate("");
+    setDescription("");
+  }
+
+  const handleAddOrEdit = () => {
+    const expense = {
       amount: parseFloat(amount),
       category,
       date,
       description,
-      user: { userId: 5 }, // Assuming userId is 1 for now
+      user: { userId },
     };
-    onSave(newExpense);
+    onSave(expense);
     setIsEditing(false);
     setAmount("");
     setCategory("");
@@ -36,11 +54,7 @@ function AddEditExpenseModal({ isEditing, setIsEditing, onSave }) {
       <View style={style.background}>
         <View style={style.container}>
           <View style={style.exitButtonContainer}>
-            <TouchableOpacity
-              onPressOut={() => {
-                setIsEditing(false);
-              }}
-            >
+            <TouchableOpacity onPressOut={handleExit}>
               <Text style={style.exitButtonText}>Exit</Text>
             </TouchableOpacity>
           </View>
@@ -69,19 +83,18 @@ function AddEditExpenseModal({ isEditing, setIsEditing, onSave }) {
             <Text>Amount</Text>
             <TextInput
               placeholder="Amount"
-              value={amount}
+              value={amount.toString()}
               onChangeText={setAmount}
-              keyboardType="numeric"
               style={style.inputContainer}
             />
           </View>
           <View style={style.buttonContainer}>
             <TouchableOpacity
               style={style.addButton}
-              onPress={handleSave}
+              onPress={handleAddOrEdit}
               onPressOut={() => setIsEditing(false)}
             >
-              <Text>Add</Text>
+              <Text>{buttonText}</Text>
             </TouchableOpacity>
           </View>
         </View>

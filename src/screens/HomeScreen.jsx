@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -8,9 +8,10 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ExpenseItem from "components/ExpenseItem";
-import { useData } from "context/DataContext";
 import AddEditExpenseModal from "components/AddEditExpenseModal";
 import axios from "axios";
+import { useUserID } from "context/UserContext";
+import { useFocusEffect } from "@react-navigation/native";
 
 function HomeScreen({ navigation }) {
   const [transactions, setTransactions] = useState([]);
@@ -19,6 +20,7 @@ function HomeScreen({ navigation }) {
   const [balance, setBalance] = useState(budget);
   const [totalExpense, setTotalExpense] = useState(0.0);
   const [isAddExpense, setIsAddExpense] = useState(false);
+  const userId = useUserID();
 
   useEffect(() => {
     fetchExpenses();
@@ -32,16 +34,22 @@ function HomeScreen({ navigation }) {
       );
       setTotalExpense(total);
       setBalance(budget - total);
-      setRecentTransactions(transactions.slice(-8));
+      setRecentTransactions(transactions.slice(-10));
     }
   }, [transactions]);
 
+  useFocusEffect(
+    useCallback(() => {
+      fetchExpenses();
+    }, [])
+  );
+
   const fetchExpenses = async () => {
     try {
-      const response = await axios.get("http://10.0.2.2:8080/api/expenses");
-      if (Array.isArray(response.data)) {
-        setTransactions(response.data);
-        const total = response.data.reduce(
+      const response = await axios.get(`http://10.0.2.2:8080/api/users/${userId}`);
+      if (Array.isArray(response.data.expenses)) {
+        setTransactions(prevTransactions => response.data.expenses);
+        const total = transactions.reduce(
           (total, item) => total + item.amount,
           0
         );
@@ -62,8 +70,11 @@ function HomeScreen({ navigation }) {
         expense
       );
       if (response.data) {
+        // Update local state after successful API response
         const newTransactions = [...transactions, response.data];
         setTransactions(newTransactions);
+
+        // Calculate updated total expense and balance
         const total = newTransactions.reduce(
           (total, item) => total + item.amount,
           0
@@ -71,6 +82,9 @@ function HomeScreen({ navigation }) {
         setTotalExpense(total);
         setBalance(budget - total);
         setRecentTransactions(newTransactions.slice(-8));
+
+        // Refetch expenses to ensure consistency
+        fetchExpenses();
       } else {
         console.error("Error: Expected a transaction object");
       }
@@ -112,6 +126,7 @@ function HomeScreen({ navigation }) {
         isEditing={isAddExpense}
         setIsEditing={setIsAddExpense}
         onSave={addExpense}
+        buttonText={"Add"}
       />
 
       <View style={style.transactionsContainer}>
@@ -130,15 +145,12 @@ function HomeScreen({ navigation }) {
           flexDirection: "column-reverse",
         }}
       >
-        {recentTransactions.map((item, index) => {
+        {recentTransactions.map((item) => {
           return (
             <ExpenseItem
               style={style.expenseItemContainer}
-              key={index}
-              description={item.description}
-              amount={item.amount}
-              category={item.category}
-              date={item.date}
+              key={item.id}
+              item={item}
             />
           );
         })}

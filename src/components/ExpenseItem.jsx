@@ -3,38 +3,66 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 function ExpenseItem({
   style: outerStyle,
-  description,
-  amount,
-  category,
-  date,
+  id,
+  item,
   editable,
-  setIsEditing = null,
+  setIsEditing,
+  setIsDeleting,
+  setItemIdToEdit,
+  setItemToEdit,
 }) {
   return (
     <View style={{ ...outerStyle, ...style.itemContainer }}>
       <View style={style.infoContainer}>
         <View>
-          <Text>{description}</Text>
-          <Text>{category}</Text>
-          <Text>{date}</Text>
+          <Text>{item.description}</Text>
+          <Text>{item.category}</Text>
+          <Text>{item.date}</Text>
         </View>
         <View style={style.amountContainer}>
-          <Text style={style.amount}>${amount}</Text>
+          <Text style={style.amount}>${item.amount}</Text>
         </View>
       </View>
 
-      {editable && <EditOptionIcons setIsEditing={setIsEditing} />}
+      {editable && (
+        <EditOptionIcons
+          id={id}
+          item={item}
+          setIsEditing={setIsEditing}
+          setIsDeleting={setIsDeleting}
+          setItemIdToEdit={setItemIdToEdit}
+          setItemToEdit={setItemToEdit}
+        />
+      )}
     </View>
   );
 }
 
-function EditOptionIcons({ setIsEditing }) {
+function EditOptionIcons({
+  id,
+  item,
+  setIsEditing,
+  setIsDeleting,
+  setItemIdToEdit,
+  setItemToEdit,
+}) {
   return (
     <View style={style.itemModifyContainer}>
-      <TouchableOpacity onPressOut={() => setIsEditing(true)}>
+      <TouchableOpacity
+        onPressOut={() => {
+          setItemIdToEdit(id);
+          setIsEditing(true);
+          setItemToEdit(item);
+        }}
+      >
         <Text style={{ ...style.optionText, color: "green" }}>E</Text>
       </TouchableOpacity>
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPressOut={() => {
+          setIsDeleting(true);
+          setItemIdToEdit(id);
+        }}
+      >
         <Text style={{ ...style.optionText, color: "red" }}>D</Text>
       </TouchableOpacity>
     </View>

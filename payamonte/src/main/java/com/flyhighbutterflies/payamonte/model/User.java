@@ -26,6 +26,9 @@ public class User {
     @Column(name = "email", length = 32, unique = true, nullable = false)
     private String email;
 
+    @Column(name = "password", nullable = false)
+    private String password;
+
     @Column(name = "datetime_created", nullable = false)
     private LocalDateTime datetimeCreated;
 
@@ -91,6 +94,14 @@ public class User {
 
     public void setDatetimeCreated(LocalDateTime datetimeCreated) {
         this.datetimeCreated = datetimeCreated;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+    
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     // Getters and Setters for the list of expenses
