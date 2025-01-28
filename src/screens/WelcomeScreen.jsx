@@ -34,7 +34,7 @@ function WelcomeScreen() {
             }}
             activeOpacity={0.5}
             underlayColor="#80000080"
-            onPress={() => console.log("Create Account Pressed")}
+            onPress={() => navigation.navigate("SignUp")}
           >
             <Text style={style.createAccountButtonText}>Create Account</Text>
           </TouchableHighlight>

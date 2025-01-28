@@ -16,8 +16,9 @@ import PiamontrackLogo from "../assets/images/PiamonTrackLogo.png";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useSetUserID, useUserID } from "context/UserContext";
 import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
 
-function RealLoginScreen() {
+function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -26,6 +27,8 @@ function RealLoginScreen() {
   const [response, setResponse] = useState(null);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const setUserID = useSetUserID();
+
+  const navigation = useNavigation();
 
   async function handleLogin() {
     setIsLoading(true);
@@ -144,9 +147,12 @@ function RealLoginScreen() {
               <Text style={style.logInButtonText}>Log In</Text>
             </TouchableHighlight>
           </LinearGradient>
-          <Text style={style.newUserText}>
-            New user? <Text style={style.signUpText}>Sign up</Text>
-          </Text>
+          <View style={style.newUserContainer}>
+            <Text>New user?</Text>
+            <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
+              <Text style={style.signUpText}>Sign up</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </SafeAreaView>
     </View>
@@ -250,8 +256,12 @@ const style = StyleSheet.create({
   forgotPasswordText: {
     fontSize: 15,
   },
-  newUserText: {
+  newUserContainer: {
+    flexDirection: "row",
+    gap: 5,
     marginTop: 19,
+  },
+  newUserText: {
     fontSize: 15,
   },
   signUpText: {
@@ -259,4 +269,4 @@ const style = StyleSheet.create({
   },
 });
 
-export default RealLoginScreen;
+export default LoginScreen;
