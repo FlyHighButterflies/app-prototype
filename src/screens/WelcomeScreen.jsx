@@ -10,9 +10,13 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import PiamontrackLogo from "../assets/images/PiamonTrackLogo.png";
+import { useNavigation } from "@react-navigation/native";
 
 function WelcomeScreen() {
   const [isLoginPressed, setIsLoginPressed] = useState(false);
+
+  const navigation = useNavigation();
+
   return (
     <View>
       <StatusBar backgroundColor="#800000" />
@@ -50,7 +54,7 @@ function WelcomeScreen() {
               onPressOut={() => {
                 setIsLoginPressed(false);
               }}
-              onPress={() => console.log("Login Pressed")}
+              onPress={() => navigation.navigate("Login")}
             >
               <Text style={style.logInButtonText}>Log In</Text>
             </TouchableHighlight>
@@ -95,6 +99,7 @@ const style = StyleSheet.create({
     zIndex: 1,
     paddingVertical: 45,
     paddingHorizontal: 32,
+    backgroundColor: "white",
   },
   welcomeText: {
     fontSize: 36,
@@ -118,16 +123,11 @@ const style = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
   },
-  logInButtonText: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: maroon,
-  },
   gradientBorder: {
     height: 61,
     width: 382,
     borderRadius: 50,
-    marginTop: 20,
+    marginTop: 19,
     padding: 3, // Thickness of the gradient border
   },
   innerButton: {
@@ -136,6 +136,11 @@ const style = StyleSheet.create({
     borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
+  },
+  logInButtonText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: maroon,
   },
 });
 
