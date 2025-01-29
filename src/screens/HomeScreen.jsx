@@ -19,9 +19,23 @@ import ProfileIcon from "react-native-vector-icons/FontAwesome";
 import BellIcon from "react-native-vector-icons/Ionicons";
 import EditBudgetIcon from "react-native-vector-icons/AntDesign";
 import ExitIcon from "react-native-vector-icons/Feather";
+import AddEditExpenseModal from "components/AddEditExpenseModal";
 
-function EditBudgetModal({ isVisible, setIsVisible }) {
-  const [money, setMoney] = useState("")
+function EditBudgetModal({
+  isVisible,
+  setIsVisible,
+  budget,
+  setBudget,
+  putBudget,
+}) {
+  const [money, setMoney] = useState(budget);
+
+  useEffect(() => {
+    if (isVisible) {
+      setMoney(budget);
+    }
+  }, [isVisible, budget]);
+
   return (
     <Modal visible={isVisible} transparent={true}>
       <View style={style.background}>
@@ -33,8 +47,8 @@ function EditBudgetModal({ isVisible, setIsVisible }) {
             <View style={style.inputContainer}>
               <Text style={style.inputLabel}>Your Budget</Text>
               <TextInput
-                placeholder="10000"
-                value={money}
+                // placeholder="10000"
+                value={money.toString()}
                 onChangeText={setMoney}
                 style={style.inputField}
               />
@@ -43,7 +57,11 @@ function EditBudgetModal({ isVisible, setIsVisible }) {
               <TouchableOpacity
                 style={style.setBudgetButton}
                 onPressOut={() => {
-                  console.log("Setting budget");
+                  if (parseFloat(money)) {
+                    setBudget(parseFloat(money) || budget);
+                    putBudget(parseFloat(money) || budget);
+                  }
+                  setIsVisible(false);
                 }}
               >
                 <Text style={style.setBudgetButtonText}>Done</Text>
@@ -59,10 +77,11 @@ function EditBudgetModal({ isVisible, setIsVisible }) {
 function HomeScreen() {
   const [transactions, setTransactions] = useState([]);
   const [recentTransactions, setRecentTransactions] = useState([]);
-  const [budget, setBudget] = useState(8000.0);
-  const [balance, setBalance] = useState(budget);
+  const [budget, setBudget] = useState(0);
+  const [balance, setBalance] = useState(0);
   const [name, setName] = useState("");
-  const [totalExpense, setTotalExpense] = useState(0.0);
+  const [totalExpense, setTotalExpense] = useState(0);
+  const [currentTotalExpense, setCurrentTotalExpense] = useState(0);
   const [isAddExpense, setIsAddExpense] = useState(false);
   const [isEditBudget, setIsEditBudget] = useState(false);
   const userId = useUserID();
@@ -72,23 +91,25 @@ function HomeScreen() {
   const date = d.getDate();
   const month = d.toLocaleString("default", { month: "long" });
 
-  console.log(transactions);
+  console.log(`Budget: ${budget}`);
+  console.log(`Total expense: ${totalExpense}`);
+  console.log(`Balance: ${balance}`);
 
   useEffect(() => {
     fetchExpenses();
   }, []);
 
-  useEffect(() => {
-    if (Array.isArray(transactions)) {
-      const total = transactions.reduce(
-        (total, item) => total + item.amount,
-        0
-      );
-      setTotalExpense(total);
-      setBalance(budget - total);
-      setRecentTransactions(transactions.slice(-10));
-    }
-  }, [transactions]);
+  // useEffect(() => {
+  //   if (Array.isArray(transactions)) {
+  //     const total = transactions.reduce(
+  //       (total, item) => total + item.amount,
+  //       0
+  //     );
+  //     setTotalExpense(total);
+  //     setBalance(budget - total);
+  //     setRecentTransactions(transactions.slice(-10));
+  //   }
+  // }, [transactions]);
 
   useFocusEffect(
     useCallback(() => {
@@ -96,20 +117,49 @@ function HomeScreen() {
     }, [])
   );
 
+  useEffect(() => {
+    const fetchUpdatedValues = async () => {
+      try {
+        const response = await axios.get(
+          `http://10.0.2.2:8080/api/users/${userId}`
+        ); // Adjust endpoint
+        setBudget(response.data.budgets[0].totalBalance);
+        setTotalExpense(response.data.budgets[0].totalExpense);
+        setBalance(response.data.budgets[0].remainingBalance);
+      } catch (error) {
+        console.error("Error fetching updated summary:", error);
+      }
+    };
+
+    fetchUpdatedValues();
+  }, [transactions, budget, totalExpense]); // Fetch updated values when transactions change
+
+  
+
+  useEffect(() => {
+    if (Array.isArray(transactions)) {
+      const total = transactions.reduce(
+        (total, item) => total + item.amount,
+        0
+      );
+      setCurrentTotalExpense(total);
+      setTotalExpense(total);
+      editExpense(total);
+    }
+  }, [transactions]);
+
   const fetchExpenses = async () => {
     try {
       const response = await axios.get(
         `http://10.0.2.2:8080/api/users/${userId}`
       );
       if (Array.isArray(response.data.expenses)) {
-        setTransactions((prevTransactions) => response.data.expenses);
+        setTransactions(response.data.expenses);
         setName(response.data.firstName);
-        const total = transactions.reduce(
-          (total, item) => total + item.amount,
-          0
-        );
-        setTotalExpense(total);
-        setBalance(budget - total);
+        setBudget(response.data.budgets[0].totalBalance);
+        setTotalExpense(response.data.budgets[0].totalExpense);
+        setBalance(response.data.budgets[0].remainingBalance);
+        setRecentTransactions(response.data.expenses.slice(-10));
       } else {
         console.error("Error: Expected an array of transactions");
       }
@@ -117,6 +167,84 @@ function HomeScreen() {
       console.error("Error fetching expenses:", error);
     }
   };
+
+  const addExpense = async (expense) => {
+    try {
+      const response = await axios.post(
+        "http://10.0.2.2:8080/api/expenses",
+        expense
+      );
+      if (response.data) {
+        // Update local state after successful API response
+        const newTransactions = [...transactions, response.data];
+        setTransactions(newTransactions);
+
+        // Calculate updated total expense and balance
+        const total = newTransactions.reduce(
+          (total, item) => total + item.amount,
+          0
+        );
+        setTotalExpense(total);
+        setBalance(budget - total);
+        setRecentTransactions(newTransactions.slice(-8));
+
+        // Refetch expenses to ensure consistency
+        fetchExpenses();
+      } else {
+        console.error("Error: Expected a transaction object");
+      }
+    } catch (error) {
+      console.error(
+        "Error adding expense:",
+        error.response ? error.response.data : error.message
+      );
+      alert(
+        `Error adding expense: ${
+          error.response ? error.response.data : error.message
+        }`
+      );
+    }
+  };
+
+  async function editBudget(newBudget) {
+    const defaultBudget = {
+      totalBalance: newBudget,
+      totalExpense: totalExpense,
+      user: {
+        userId,
+      },
+    };
+
+    try {
+      const res = await axios.put(
+        `http://10.0.2.2:8080/api/budgets/${userId}`,
+        defaultBudget
+      );
+      console.log("Budget successfully edited: ", res.data);
+    } catch (err) {
+      console.log("Error editing budget: ", err);
+    }
+  }
+
+  async function editExpense(newExpense) {
+    const defaultBudget = {
+      totalBalance: budget,
+      totalExpense: newExpense,
+      user: {
+        userId,
+      },
+    };
+
+    try {
+      const res = await axios.put(
+        `http://10.0.2.2:8080/api/budgets/${userId}`,
+        defaultBudget
+      );
+      console.log("Budget successfully edited: ", res.data);
+    } catch (err) {
+      console.log("Error editing budget: ", err);
+    }
+  }
 
   return (
     <View>
@@ -146,8 +274,11 @@ function HomeScreen() {
           <View style={style.moneyContainer}>
             <View style={style.balanceContainer}>
               <Text style={style.balanceText}>Your Balance</Text>
-              <Text style={style.balanceAmountText}>P{balance}</Text>
-              <TouchableOpacity onPress={() => setIsEditBudget(true)} style={style.editBudgetIcon}>
+              <Text style={style.balanceAmountText}>P{balance.toFixed(2)}</Text>
+              <TouchableOpacity
+                onPress={() => setIsEditBudget(true)}
+                style={style.editBudgetIcon}
+              >
                 <EditBudgetIcon name="edit" color="white" size={24} />
               </TouchableOpacity>
             </View>
@@ -159,14 +290,23 @@ function HomeScreen() {
             </View>
           </View>
         </View>
+        <AddEditExpenseModal
+          isEditing={isAddExpense}
+          setIsEditing={setIsAddExpense}
+          onSave={addExpense}
+          editExpense={editExpense}
+        />
         <EditBudgetModal
           isVisible={isEditBudget}
           setIsVisible={setIsEditBudget}
+          budget={budget}
+          setBudget={setBudget}
+          putBudget={editBudget}
         />
         <View style={style.transactionsContainer}>
           <View style={style.transactionsTitleContainer}>
             <Text style={style.transactionsTitleText}>
-              Today's Transactionsw
+              Today's Transactions
             </Text>
             <TouchableOpacity
               style={style.viewAllButton}
@@ -193,6 +333,9 @@ function HomeScreen() {
                 );
               })}
             </View>
+            <TouchableOpacity onPress={() => setIsAddExpense(true)}>
+              <Text>Add expense</Text>
+            </TouchableOpacity>
           </ScrollView>
         </View>
       </SafeAreaView>

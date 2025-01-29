@@ -14,7 +14,7 @@ const ICON_SIZE = 25;
 function BottomNavigation() {
   return (
     <Tab.Navigator
-      initialRouteName="Analytics"
+      initialRouteName="Home"
       screenOptions={({ route }) => ({
         tabBarIcon: () => {
           if (route.name === "Home") {
