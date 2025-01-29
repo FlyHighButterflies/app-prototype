@@ -153,7 +153,9 @@ function HomeScreen() {
             </View>
             <View style={style.expenseContainer}>
               <Text style={style.expenseText}>Total Expense</Text>
-              <Text style={style.expenseAmountText}>P{totalExpense}</Text>
+              <Text style={style.expenseAmountText}>
+                P{totalExpense.toFixed(2)}
+              </Text>
             </View>
           </View>
         </View>
@@ -164,7 +166,7 @@ function HomeScreen() {
         <View style={style.transactionsContainer}>
           <View style={style.transactionsTitleContainer}>
             <Text style={style.transactionsTitleText}>
-              Today's Transactions
+              Today's Transactionsw
             </Text>
             <TouchableOpacity
               style={style.viewAllButton}
