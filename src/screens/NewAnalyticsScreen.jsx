@@ -11,73 +11,25 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SunIcon from "react-native-vector-icons/MaterialCommunityIcons";
+import MoonIcon from "react-native-vector-icons/Ionicons";
 import PesoIcon from "react-native-vector-icons/FontAwesome6";
 import BellIcon from "react-native-vector-icons/Ionicons";
 import { Bar, CartesianChart } from "victory-native";
 import roboto from "./Roboto-Regular.ttf";
-import { LinearGradient, useFont, vec } from "@shopify/react-native-skia";
+import { useFont } from "@shopify/react-native-skia";
 import SwitchSelector from "react-native-switch-selector";
 
 const DATA = [
-  {
-    month: 1,
-    expense: 1,
-  },
-  {
-    month: 2,
-    expense: 2,
-  },
-  {
-    month: 3,
-    expense: 3,
-  },
-  {
-    month: 4,
-    expense: 2,
-  },
-  {
-    month: 5,
-    expense: 2,
-  },
-  {
-    month: 6,
-    expense: 2,
-  },
-  {
-    month: 7,
-    expense: 2,
-  },
-  {
-    month: 8,
-    expense: 2,
-  },
-  {
-    month: 9,
-    expense: 2,
-  },
-  {
-    month: 10,
-    expense: 2,
-  },
-  {
-    month: 11,
-    expense: 2,
-  },
-  {
-    month: 12,
-    expense: 2,
-  },
+  { day: 0, expense: 0 }, // Sunday
+  { day: 1, expense: 0 }, // Monday
+  { day: 2, expense: 0 }, // Tuesday
+  { day: 3, expense: 10 }, // Wednesday (Highest)
+  { day: 4, expense: 0 }, // Thursday
+  { day: 5, expense: 0 }, // Friday
+  { day: 6, expense: 0 }, // Saturday
 ];
 
-function DailyExpenseItem({
-  id,
-  item,
-  editable,
-  setIsEditing,
-  setIsDeleting,
-  setItemIdToEdit,
-  setItemToEdit,
-}) {
+function DailyExpenseItem({ item }) {
   return (
     <View style={style.itemContainer}>
       <View style={style.infoContainer}>
@@ -95,17 +47,27 @@ function DailyExpenseItem({
           </Text>
         </View>
       </View>
+    </View>
+  );
+}
 
-      {editable && (
-        <EditOptionIcons
-          id={id}
-          item={item}
-          setIsEditing={setIsEditing}
-          setIsDeleting={setIsDeleting}
-          setItemIdToEdit={setItemIdToEdit}
-          setItemToEdit={setItemToEdit}
-        />
-      )}
+function MonthlyExpenseItem({ item }) {
+  return (
+    <View style={style.itemContainer}>
+      <View style={style.infoContainer}>
+        <View style={style.iconContainer}>
+          <MoonIcon name={"moon-sharp"} size={24} color={"#800000"} />
+        </View>
+        <View style={style.textContainer}>
+          <Text style={style.categoryText}>{item.category}</Text>
+        </View>
+        <View style={style.amountContainer}>
+          <Text style={style.amount}>
+            <PesoIcon name={"peso-sign"} size={15} />
+            {item.amount}
+          </Text>
+        </View>
+      </View>
     </View>
   );
 }
@@ -116,10 +78,19 @@ function NewAnalyticsScreen() {
   const [selectedOption, setSelectedOption] = useState("weekly");
   const userId = useUserID();
 
-  console.log(transactions);
-
   useEffect(() => {
     fetchExpenses();
+    async function getDaily() {
+      try {
+        const res = await axios.get(
+          `http://10.0.2.2:8080/api/analytics/daily?userId=${userId}`
+        );
+        console.log(`Data: ${res.data}`);
+      } catch (err) {
+        console.log(`Error: ${err}`);
+      }
+    }
+    getDaily();
   }, []);
 
   const fetchExpenses = async () => {
@@ -162,21 +133,26 @@ function NewAnalyticsScreen() {
               <View style={style.chartContainer}>
                 <CartesianChart
                   data={DATA}
-                  xKey="month"
+                  xKey="day"
                   yKeys={["expense"]}
-                  domain={{ x: [1, 12], y: [0, 10] }}
+                  domain={{ x: [0, 6], y: [0, 10] }}
                   domainPadding={{ left: 15, right: 15 }}
                   padding={10}
                   xAxis={{
                     font: myFont,
                     formatXLabel: (value) => {
-                      const date = new Date();
-                      date.setMonth(value - 1);
-                      const monthName = date.toLocaleString("default", {
-                        month: "short",
-                      });
-                      return monthName;
+                      const days = [
+                        "Sun",
+                        "Mon",
+                        "Tue",
+                        "Wed",
+                        "Thu",
+                        "Fri",
+                        "Sat",
+                      ];
+                      return days[value];
                     },
+                    grid: { stroke: "transparent" },
                   }}
                 >
                   {({ points, chartBounds }) => (
@@ -190,13 +166,8 @@ function NewAnalyticsScreen() {
                         bottomLeft: 20,
                         bottomRight: 20,
                       }}
-                    >
-                      <LinearGradient
-                        start={vec(0, 0)}
-                        end={vec(0, 400)}
-                        colors={["#a78bfa", "#a78bfa50"]}
-                      />
-                    </Bar>
+                      color="#800000"
+                    />
                   )}
                 </CartesianChart>
               </View>
@@ -208,11 +179,13 @@ function NewAnalyticsScreen() {
                   ]}
                   initial={0}
                   onPress={(value) => setSelectedOption(value)}
-                  buttonColor="#CB7B0C" // Active color
-                  backgroundColor="white" // Inactive color
-                  textColor="black"
+                  buttonColor="#CB7B0C"
+                  backgroundColor="white"
+                  textColor="#800000"
                   selectedColor="white"
                   borderRadius={10}
+                  textStyle={{ fontWeight: "bold" }}
+                  selectedTextStyle={{ fontWeight: "bold" }}
                 />
               </View>
             </View>
@@ -223,11 +196,11 @@ function NewAnalyticsScreen() {
             style={style.transactionsListOuterContainer}
             showsVerticalScrollIndicator={false}
           >
-            <View style={style.transactionsListInnerContainer}>
-              {transactions.map((item) => {
-                return <DailyExpenseItem key={item.id} item={item} />;
-              })}
-            </View>
+            {/* <View style={style.transactionsListInnerContainer}> */}
+            {transactions.map((item) => {
+              return <MonthlyExpenseItem key={item.id} item={item} />;
+            })}
+            {/* </View> */}
           </ScrollView>
         </View>
       </SafeAreaView>
@@ -283,7 +256,7 @@ const style = StyleSheet.create({
   },
   transactionsContainer: {
     width: 447,
-    height: 521,
+    height: 465,
     marginTop: -60,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
@@ -293,7 +266,7 @@ const style = StyleSheet.create({
     zIndex: 2,
   },
   transactionsListInnerContainer: {
-    gap: 10,
+    gap: 15,
   },
   itemContainer: {
     width: 385,
@@ -303,6 +276,7 @@ const style = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: "white",
     borderRadius: 20,
+    marginBottom: 20,
   },
   infoContainer: {
     flex: 1,

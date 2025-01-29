@@ -81,7 +81,19 @@ function AnalyticsScreen() {
   const [dataByCategory, setDataByCategory] = useState([]);
   const [selectedOption, setSelectedOption] = useState("weekly");
   const userId = useUserID();
-  
+
+
+  useEffect(() => {
+    try {
+      const res = axios.get(
+        `http://10.0.2.2:8080/api/analytics/daily?userId=1`
+      );
+      console.log(`Data: ${res.data}`);
+    } catch (err) {
+      console.log(`Error: ${err}`);
+    }
+  }, []);
+
   useEffect(() => {
     fetchExpenses();
     // const byCategory = transactions.reduce((finalObject, transaction) => {
@@ -113,8 +125,6 @@ function AnalyticsScreen() {
       console.error("Error fetching expenses:", error);
     }
   };
-
-  // console.log(dataByCategory);
 
   return (
     <SafeAreaView style={style.screenContainer}>
@@ -166,7 +176,7 @@ function AnalyticsScreen() {
             )}
           </CartesianChart>
         </View>
-        <View style={{ width:391, borderWidth: 1, }}>
+        <View style={{ width: 391, borderWidth: 1 }}>
           <SwitchSelector
             options={[
               { label: "Weekly", value: "weekly" },

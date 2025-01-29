@@ -73,7 +73,7 @@ function LoginScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView style={style.screenContainer}>
+      <SafeAreaView style={{ height: "100%", justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" color="blue" />
         <Text>Loading...</Text>
       </SafeAreaView>
