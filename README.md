@@ -23,14 +23,6 @@
 - Provides an intuitive overview of income, expenses, and budgets—all in one place.  
 - Features interactive charts to make financial tracking engaging and easy to understand.  
 
-
----
-
-## **📄 Documentation**  
-For more details, check out our full documentation:  
-
-👉 [PIAMONTRACK Documentation](https://docs.google.com/document/d/18zc06Pd66N917OYmdjzWRBBbGLaK-NoQnEMkxhc6oy0/edit?tab=t.0)  
-
 ---
 
 ## **✨ Why PIAMONTRACK?**  
@@ -38,6 +30,13 @@ For more details, check out our full documentation:
 ✔️ **Mobile-First Design** – Optimized for seamless use on smartphones, making expense tracking effortless.  
 ✔️ **Real-Time Updates** – Get the latest financial insights instantly.  
 ✔️ **Interactive & Intuitive** – Engaging charts and an easy-to-navigate interface for a smooth experience.  
+
+---
+
+## **📄 Documentation**  
+For more details, check out our full documentation:  
+
+👉 [PIAMONTRACK Documentation](https://docs.google.com/document/d/18zc06Pd66N917OYmdjzWRBBbGLaK-NoQnEMkxhc6oy0/edit?tab=t.0)  
 
 ---
 
