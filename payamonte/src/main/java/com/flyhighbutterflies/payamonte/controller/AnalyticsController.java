@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.time.format.TextStyle;
 import java.util.Locale;
+import java.time.temporal.IsoFields;
 
 @RestController
 @RequestMapping("/api/analytics")
@@ -27,35 +28,56 @@ public class AnalyticsController {
         Map<String, Object> response = new HashMap<>();
         response.put("date", today);
         response.put("dayOfWeek", dayOfWeek);
-        response.put("dailyExpense", dailyExpense);
+        response.put("dailyExpense", dailyExpense != null ? dailyExpense : 0);  // Prevent null
         return ResponseEntity.ok(response);
     }
 
     // Endpoint to fetch weekly expenses
     @GetMapping("/weekly")
-    public ResponseEntity<Double> getWeeklyAnalytics() {
-        Double weeklyExpense = analyticsService.getWeeklyExpense();
-        return ResponseEntity.ok(weeklyExpense);
+    public ResponseEntity<Map<String, Object>> getWeeklyAnalytics(@RequestParam Long userId) {
+        Double weeklyExpense = analyticsService.getWeeklyExpense(userId);
+        LocalDate today = LocalDate.now();
+        Map<String, Object> response = new HashMap<>();
+        response.put("date", today);
+        response.put("weekOfYear", today.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR));
+        response.put("weeklyExpense", weeklyExpense != null ? weeklyExpense : 0);  // Prevent null
+        return ResponseEntity.ok(response);
     }
 
     // Endpoint to fetch monthly expenses
     @GetMapping("/monthly")
-    public ResponseEntity<Double> getMonthlyAnalytics() {
-        Double monthlyExpense = analyticsService.getMonthlyExpense();
-        return ResponseEntity.ok(monthlyExpense);
+    public ResponseEntity<Map<String, Object>> getMonthlyAnalytics(@RequestParam Long userId) {
+        Double monthlyExpense = analyticsService.getMonthlyExpense(userId);
+        LocalDate today = LocalDate.now();
+        String month = today.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+        Map<String, Object> response = new HashMap<>();
+        response.put("date", today);
+        response.put("month", month);
+        response.put("monthlyExpense", monthlyExpense != null ? monthlyExpense : 0);  // Prevent null
+        return ResponseEntity.ok(response);
     }
 
     // Endpoint to fetch annual expenses
     @GetMapping("/annual")
-    public ResponseEntity<Double> getAnnualAnalytics() {
-        Double annualExpense = analyticsService.getAnnualExpense();
-        return ResponseEntity.ok(annualExpense);
+    public ResponseEntity<Map<String, Object>> getAnnualAnalytics(@RequestParam Long userId) {
+        Double annualExpense = analyticsService.getAnnualExpense(userId);
+        LocalDate today = LocalDate.now();
+        int year = today.getYear();
+        Map<String, Object> response = new HashMap<>();
+        response.put("date", today);
+        response.put("year", year);
+        response.put("annualExpense", annualExpense != null ? annualExpense : 0);  // Prevent null
+        return ResponseEntity.ok(response);
     }
 
-    // // Endpoint to fetch total expenses grouped by category
-    // @GetMapping("/categories")
-    // public ResponseEntity<Map<String, Double>> getCategoryAnalytics() {
-    //     Map<String, Double> expensesByCategory = analyticsService.getExpenseByCategory();
-    //     return ResponseEntity.ok(expensesByCategory);
-    // }
+    // Endpoint to fetch total expenses grouped by category
+    @GetMapping("/categories")
+    public ResponseEntity<Map<String, Object>> getCategoryAnalytics(@RequestParam Long userId) {
+        Map<String, Double> expensesByCategory = analyticsService.getExpenseByCategory(userId);
+        LocalDate today = LocalDate.now();
+        Map<String, Object> response = new HashMap<>();
+        response.put("date", today);
+        response.put("expensesByCategory", expensesByCategory != null ? expensesByCategory : new HashMap<>());  // Prevent null
+        return ResponseEntity.ok(response);
+    }
 }
