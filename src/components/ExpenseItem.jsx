@@ -1,5 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import BagIcon from "react-native-vector-icons/MaterialIcons";
+import PesoIcon from "react-native-vector-icons/FontAwesome6";
 
 function ExpenseItem({
   style: outerStyle,
@@ -14,13 +16,18 @@ function ExpenseItem({
   return (
     <View style={{ ...outerStyle, ...style.itemContainer }}>
       <View style={style.infoContainer}>
-        <View>
-          <Text>{item.description}</Text>
-          <Text>{item.category}</Text>
-          <Text>{item.date}</Text>
+        <View style={style.iconContainer}>
+          <BagIcon name={"shopping-bag"} size={24} color={"#800000"} />
+        </View>
+        <View style={style.textContainer}>
+          <Text style={style.categoryText}>{item.category}</Text>
+          <Text style={style.descriptionText}>{item.description}</Text>
         </View>
         <View style={style.amountContainer}>
-          <Text style={style.amount}>${item.amount}</Text>
+          <Text style={style.amount}>
+            <PesoIcon name={"peso-sign"} size={15} />
+            {item.amount}
+            </Text>
         </View>
       </View>
 
@@ -49,7 +56,7 @@ function EditOptionIcons({
   return (
     <View style={style.itemModifyContainer}>
       <TouchableOpacity
-        onPressOut={() => {
+        onPress={() => {
           setItemIdToEdit(id);
           setIsEditing(true);
           setItemToEdit(item);
@@ -58,7 +65,7 @@ function EditOptionIcons({
         <Text style={{ ...style.optionText, color: "green" }}>E</Text>
       </TouchableOpacity>
       <TouchableOpacity
-        onPressOut={() => {
+        onPress={() => {
           setIsDeleting(true);
           setItemIdToEdit(id);
         }}
@@ -71,22 +78,37 @@ function EditOptionIcons({
 
 const style = StyleSheet.create({
   itemContainer: {
+    width: 385,
+    height: 81,
     flexDirection: "row",
-    justifyContent: "space-between",
-    padding: 10,
-    borderWidth: 1,
-    gap: 20,
+    alignItems: "center",
+    paddingHorizontal: 15,
+    backgroundColor: "white",
   },
   infoContainer: {
     flex: 1,
     flexDirection: "row",
-    justifyContent: "space-between",
-    // borderWidth: 1,
+  },
+  iconContainer: {
+    justifyContent: "center",
+  },
+  textContainer: {
+    marginLeft: 11,
+  },
+  categoryText: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  descriptionText: {
+    fontSize: 12,
+    color: "#00000080",
   },
   amountContainer: {
+    marginLeft: "auto",
     justifyContent: "center",
   },
   amount: {
+    fontSize: 17,
     fontWeight: "bold",
   },
   itemModifyContainer: {
@@ -94,7 +116,6 @@ const style = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 20,
-    // borderWidth: 1,
     width: 60,
   },
   optionText: {
