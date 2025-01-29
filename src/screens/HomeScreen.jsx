@@ -4,10 +4,12 @@ import ExpenseItem from "components/ExpenseItem";
 import { useUserID } from "context/UserContext";
 import React, { useCallback, useEffect, useState } from "react";
 import {
+  Modal,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   TouchableHighlight,
   TouchableOpacity,
   View,
@@ -15,6 +17,44 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import ProfileIcon from "react-native-vector-icons/FontAwesome";
 import BellIcon from "react-native-vector-icons/Ionicons";
+import EditBudgetIcon from "react-native-vector-icons/AntDesign";
+import ExitIcon from "react-native-vector-icons/Feather";
+
+function EditBudgetModal({ isVisible, setIsVisible }) {
+  const [money, setMoney] = useState("")
+  return (
+    <Modal visible={isVisible} transparent={true}>
+      <View style={style.background}>
+        <View style={style.container}>
+          <View style={style.exitBudgetModalContainer}>
+            <TouchableOpacity onPress={() => setIsVisible(false)}>
+              <ExitIcon name="x" size={25} />
+            </TouchableOpacity>
+            <View style={style.inputContainer}>
+              <Text style={style.inputLabel}>Your Budget</Text>
+              <TextInput
+                placeholder="10000"
+                value={money}
+                onChangeText={setMoney}
+                style={style.inputField}
+              />
+            </View>
+            <View style={style.setBudgetButtonContainer}>
+              <TouchableOpacity
+                style={style.setBudgetButton}
+                onPressOut={() => {
+                  console.log("Setting budget");
+                }}
+              >
+                <Text style={style.setBudgetButtonText}>Done</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+}
 
 function HomeScreen() {
   const [transactions, setTransactions] = useState([]);
@@ -24,6 +64,7 @@ function HomeScreen() {
   const [name, setName] = useState("");
   const [totalExpense, setTotalExpense] = useState(0.0);
   const [isAddExpense, setIsAddExpense] = useState(false);
+  const [isEditBudget, setIsEditBudget] = useState(true);
   const userId = useUserID();
   const navigation = useNavigation();
   const d = new Date();
@@ -106,6 +147,9 @@ function HomeScreen() {
             <View style={style.balanceContainer}>
               <Text style={style.balanceText}>Your Balance</Text>
               <Text style={style.balanceAmountText}>P{balance}</Text>
+              <TouchableOpacity onPress={() => setIsEditBudget(true)} style={style.editBudgetIcon}>
+                <EditBudgetIcon name="edit" color="white" size={24} />
+              </TouchableOpacity>
             </View>
             <View style={style.expenseContainer}>
               <Text style={style.expenseText}>Total Expense</Text>
@@ -113,6 +157,10 @@ function HomeScreen() {
             </View>
           </View>
         </View>
+        <EditBudgetModal
+          isVisible={isEditBudget}
+          setIsVisible={setIsEditBudget}
+        />
         <View style={style.transactionsContainer}>
           <View style={style.transactionsTitleContainer}>
             <Text style={style.transactionsTitleText}>
@@ -218,6 +266,7 @@ const style = StyleSheet.create({
     marginTop: 12,
   },
   balanceContainer: {
+    position: "relative",
     justifyContent: "center",
     alignItems: "center",
     width: 199,
@@ -241,6 +290,11 @@ const style = StyleSheet.create({
     fontSize: 25,
     fontWeight: "bold",
   },
+  editBudgetIcon: {
+    position: "absolute",
+    bottom: 15,
+    right: 15,
+  },
   expenseText: {
     color: "white",
   },
@@ -248,6 +302,55 @@ const style = StyleSheet.create({
     color: "white",
     fontSize: 25,
     fontWeight: "bold",
+  },
+  background: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
+  },
+  container: {
+    padding: 15,
+    paddingHorizontal: 25,
+    width: 390,
+    height: 230,
+    backgroundColor: "#ededeb",
+    borderRadius: 30,
+  },
+  exitBudgetModalContainer: {
+    alignItems: "flex-end",
+  },
+  inputContainer: {
+    width: "100%",
+    gap: 3,
+  },
+  inputLabel: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  inputField: {
+    borderWidth: 1,
+    height: 56,
+    padding: 15,
+    borderRadius: 20,
+    backgroundColor: "white",
+  },
+  setBudgetButtonContainer: {
+    width: 340,
+    height: 56,
+    marginTop: 25,
+  },
+  setBudgetButton: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 20,
+    backgroundColor: "#800000",
+  },
+  setBudgetButtonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "white",
   },
   transactionsContainer: {
     width: 447,
