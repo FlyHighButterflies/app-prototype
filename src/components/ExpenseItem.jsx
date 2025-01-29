@@ -87,6 +87,7 @@ const style = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: "white",
     borderRadius: 20,
+    marginBottom: 20,
   },
   infoContainer: {
     flex: 1,

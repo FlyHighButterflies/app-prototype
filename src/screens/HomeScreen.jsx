@@ -19,6 +19,7 @@ import ProfileIcon from "react-native-vector-icons/FontAwesome";
 import BellIcon from "react-native-vector-icons/Ionicons";
 import EditBudgetIcon from "react-native-vector-icons/AntDesign";
 import ExitIcon from "react-native-vector-icons/Feather";
+import AddBudgetIcon from "react-native-vector-icons/AntDesign";
 import AddEditExpenseModal from "components/AddEditExpenseModal";
 
 function EditBudgetModal({
@@ -71,6 +72,18 @@ function EditBudgetModal({
         </View>
       </View>
     </Modal>
+  );
+}
+
+function AddExpenseButton({ setIsAddExpense }) {
+  return (
+    <TouchableHighlight
+      style={style.addExpenseButton}
+      underlayColor={"#8000080"}
+      onPress={() => setIsAddExpense(true)}
+    >
+      <AddBudgetIcon name="plus" color="white" size={26} />
+    </TouchableHighlight>
   );
 }
 
@@ -133,8 +146,6 @@ function HomeScreen() {
 
     fetchUpdatedValues();
   }, [transactions, budget, totalExpense]); // Fetch updated values when transactions change
-
-  
 
   useEffect(() => {
     if (Array.isArray(transactions)) {
@@ -295,6 +306,7 @@ function HomeScreen() {
           setIsEditing={setIsAddExpense}
           onSave={addExpense}
           editExpense={editExpense}
+          buttonText="Add"
         />
         <EditBudgetModal
           isVisible={isEditBudget}
@@ -304,6 +316,9 @@ function HomeScreen() {
           putBudget={editBudget}
         />
         <View style={style.transactionsContainer}>
+          <View style={style.addExpenseButtonContainer}>
+            <AddExpenseButton setIsAddExpense={setIsAddExpense} />
+          </View>
           <View style={style.transactionsTitleContainer}>
             <Text style={style.transactionsTitleText}>
               Today's Transactions
@@ -322,20 +337,17 @@ function HomeScreen() {
               flexDirection: "column-reverse",
             }}
           >
-            <View style={style.transactionsListInnerContainer}>
-              {recentTransactions.map((item) => {
-                return (
-                  <ExpenseItem
-                    style={style.expenseItemContainer}
-                    key={item.id}
-                    item={item}
-                  />
-                );
-              })}
-            </View>
-            <TouchableOpacity onPress={() => setIsAddExpense(true)}>
-              <Text>Add expense</Text>
-            </TouchableOpacity>
+            {/* <View style={style.transactionsListInnerContainer}> */}
+            {recentTransactions.map((item) => {
+              return (
+                <ExpenseItem
+                  style={style.expenseItemContainer}
+                  key={item.id}
+                  item={item}
+                />
+              );
+            })}
+            {/* </View> */}
           </ScrollView>
         </View>
       </SafeAreaView>
@@ -356,7 +368,7 @@ const style = StyleSheet.create({
     paddingHorizontal: 18,
   },
   profileContainer: {
-    marginTop: 37,
+    marginTop: 20,
     flexDirection: "row",
     alignItems: "center",
   },
@@ -498,8 +510,9 @@ const style = StyleSheet.create({
     color: "white",
   },
   transactionsContainer: {
+    position: "relative",
     width: 447,
-    height: 600,
+    height: 540,
     marginTop: -60,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
@@ -531,9 +544,27 @@ const style = StyleSheet.create({
   },
   transactionsListOuterContainer: {
     marginTop: 20,
+    gap: 15,
   },
   transactionsListInnerContainer: {
     gap: 15,
+  },
+  addExpenseButtonContainer: {
+    height: 1,
+    alignItems: "center",
+  },
+  addExpenseButton: {
+    // position: "absolute",
+    width: 60,
+    height: 60,
+    backgroundColor: "#800000",
+    right: 0,
+    borderWidth: 3,
+    borderColor: "white",
+    borderRadius: 9999999,
+    marginTop: -60,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
