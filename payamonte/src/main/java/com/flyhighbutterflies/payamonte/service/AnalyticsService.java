@@ -16,11 +16,11 @@ public class AnalyticsService {
     @Autowired
     private ExpenseRepository expenseRepository;
 
-    // Fetch total expenses for today
-    public Double getDailyExpense() {
+    // Fetch total expenses for today for a specific user
+    public Double getDailyExpense(Long userId) {
         LocalDate today = LocalDate.now();
         return expenseRepository.findAll().stream()
-                .filter(expense -> expense.getDate().isEqual(today))
+                .filter(expense -> expense.getDate().isEqual(today) && expense.getUser().getUserId().equals(userId))
                 .mapToDouble(Expense::getAmount)
                 .sum();
     }
@@ -61,13 +61,12 @@ public class AnalyticsService {
                 .sum();
     }
 
-    // Fetch total expenses grouped by category
-    public Map<String, Double> getExpenseByCategory() {
-        return expenseRepository.findAll().stream()
-                .collect(Collectors.groupingBy(
-                        Expense::getCategory,
-                        Collectors.summingDouble(Expense::getAmount)
-                ));
-    }
-
+    // // Fetch total expenses grouped by category
+    // public Map<String, Double> getExpenseByCategory() {
+    //     return expenseRepository.findAll().stream()
+    //             .collect(Collectors.groupingBy(
+    //                     Expense::getCategory,
+    //                     Collectors.summingDouble(Expense::getAmount)
+    //             ));
+    // }
 }
