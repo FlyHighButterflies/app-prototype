@@ -64,7 +64,7 @@ function HomeScreen() {
   const [name, setName] = useState("");
   const [totalExpense, setTotalExpense] = useState(0.0);
   const [isAddExpense, setIsAddExpense] = useState(false);
-  const [isEditBudget, setIsEditBudget] = useState(true);
+  const [isEditBudget, setIsEditBudget] = useState(false);
   const userId = useUserID();
   const navigation = useNavigation();
   const d = new Date();
@@ -388,7 +388,7 @@ const style = StyleSheet.create({
     marginTop: 20,
   },
   transactionsListInnerContainer: {
-    gap: 10,
+    gap: 15,
   },
 });
 

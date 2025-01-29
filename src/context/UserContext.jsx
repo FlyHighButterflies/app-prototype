@@ -12,7 +12,7 @@ export function useSetUserID() {
 }
 
 function UserContext({ children }) {
-  const [userID, setUserID] = useState(null);
+  const [userID, setUserID] = useState(1);
 
   return (
     <userIDContext.Provider value={userID}>

@@ -2,6 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React from "react";
 import AnalyticsScreen from "screens/AnalyticsScreen";
 import HomeScreen from "screens/HomeScreen";
+import NewAnalyticsScreen from "screens/NewAnalyticsScreen";
 import TestScreen from "screens/TestScreen";
 
 const Tab = createBottomTabNavigator();
@@ -9,15 +10,20 @@ const Tab = createBottomTabNavigator();
 function BottomNavigation() {
 
   return (
-    <Tab.Navigator initialRouteName="Home">
+    <Tab.Navigator initialRouteName="Analytics">
       <Tab.Screen
         name="Home"
         component={HomeScreen}
         options={{ headerShown: false }}
       />
       <Tab.Screen
-        name="Analytics"
+        name="FakeAnalytics"
         component={AnalyticsScreen}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="Analytics"
+        component={NewAnalyticsScreen}
         options={{ headerShown: false }}
       />
       <Tab.Screen

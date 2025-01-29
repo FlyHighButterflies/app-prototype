@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useData } from "context/DataContext";
 import { useUserID } from "context/UserContext";
 import axios from "axios";
+import SwitchSelector from "react-native-switch-selector";
 
 const DATA = [
   {
@@ -78,23 +79,24 @@ function AnalyticsScreen() {
   const myFont = useFont(roboto, 12);
   const [transactions, setTransactions] = useState([]);
   const [dataByCategory, setDataByCategory] = useState([]);
+  const [selectedOption, setSelectedOption] = useState("weekly");
   const userId = useUserID();
   
   useEffect(() => {
     fetchExpenses();
-    const byCategory = transactions.reduce((finalObject, transaction) => {
-      const { category, amount } = transaction;
+    // const byCategory = transactions.reduce((finalObject, transaction) => {
+    //   const { category, amount } = transaction;
 
-      if (!finalObject[category]) {
-        finalObject[category] = { total: 0, transactions: [] };
-      }
+    //   if (!finalObject[category]) {
+    //     finalObject[category] = { total: 0, transactions: [] };
+    //   }
 
-      finalObject[category].total += amount;
-      finalObject[category].transactions.push(transaction);
-      return finalObject;
-    }, {});
+    //   finalObject[category].total += amount;
+    //   finalObject[category].transactions.push(transaction);
+    //   return finalObject;
+    // }, {});
 
-    setDataByCategory(byCategory);
+    // setDataByCategory(byCategory);
   }, [transactions]);
 
   const fetchExpenses = async () => {
@@ -116,13 +118,6 @@ function AnalyticsScreen() {
 
   return (
     <SafeAreaView style={style.screenContainer}>
-      <View style={style.headerContainer}>
-        <View>
-          <Text style={style.headerText}>Analytics</Text>
-        </View>
-      </View>
-
-      {/* Graph */}
       <View
         style={{
           justifyContent: "center",
@@ -171,8 +166,23 @@ function AnalyticsScreen() {
             )}
           </CartesianChart>
         </View>
+        <View style={{ width:391, borderWidth: 1, }}>
+          <SwitchSelector
+            options={[
+              { label: "Weekly", value: "weekly" },
+              { label: "Monthly", value: "monthly" },
+            ]}
+            initial={0}
+            onPress={(value) => setSelectedOption(value)}
+            buttonColor="#007AFF" // Active color
+            backgroundColor="#EFEreFEF" // Inactive color
+            textColor="#000"
+            selectedColor="#FFF"
+            borderRadius={10}
+          />
+        </View>
       </View>
-      
+
       <ScrollView
         style={style.categoryItemListContainer}
         showsVerticalScrollIndicator={false}
@@ -197,53 +207,36 @@ const style = {
     padding: 15,
     height: "100%",
   },
-  headerContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-  },
-  headerBackContainer: {
-    borderWidth: 1,
-    borderColor: "green",
-    marginRight: 20,
-    justifyContent: "center",
-  },
-  headerText: {
-    fontWeight: "bold",
-    fontSize: 20,
-  },
   chartContainer: {
-    height: 300,
-    width: "100%",
+    height: 234,
+    width: 391,
     borderWidth: 1,
   },
-  itemContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    height: "50",
-    padding: 10,
-    paddingHorizontal: "20",
-    borderWidth: 1,
-    gap: 20,
-  },
-  infoContainer: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  amountContainer: {
-    justifyContent: "center",
-  },
-  categoryItemListContainer: {
-    marginTop: 20,
-    // borderWidth: 1,
-    borderColor: "red",
-  },
-  categoryItemContainer: {
-    marginBottom: 10,
-    borderRadius: 10,
-    // borderWidth: 1,
-  },
+  // itemContainer: {
+  //   flexDirection: "row",
+  //   justifyContent: "space-between",
+  //   alignItems: "center",
+  //   height: "50",
+  //   padding: 10,
+  //   paddingHorizontal: "20",
+  //   borderWidth: 1,
+  //   gap: 20,
+  // },
+  // infoContainer: {
+  //   flex: 1,
+  //   flexDirection: "row",
+  //   justifyContent: "space-between",
+  // },
+  // amountContainer: {
+  //   justifyContent: "center",
+  // },
+  // categoryItemListContainer: {
+  //   marginTop: 20,
+  // },
+  // categoryItemContainer: {
+  //   marginBottom: 10,
+  //   borderRadius: 10,
+  // },
 };
 
 export default AnalyticsScreen;

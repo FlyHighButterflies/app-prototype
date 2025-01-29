@@ -205,7 +205,7 @@ const style = StyleSheet.create({
     marginTop: 20,
   },
   expenseListInnerContainer: {
-    gap: 10,
+    gap: 15,
   },
   expenseItemContainer: {
     width: 400,
