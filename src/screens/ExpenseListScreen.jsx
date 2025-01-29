@@ -19,24 +19,19 @@ function DeleteExpenseModal({ isDeleting, setIsDeleting, handleDelete }) {
     <Modal visible={isDeleting} transparent={true}>
       <View style={style.background}>
         <View style={style.container}>
-          <TouchableOpacity
-            style={style.exitButtonContainer}
-            onPress={() => setIsDeleting(false)}
-          >
-            <Text style={style.exitButtonText}>Exit</Text>
-          </TouchableOpacity>
-
-          <View>
-            <Text>Do you really want to delete this item?</Text>
+          <View style={style.textContainer}>
+            <Text style={style.deleteTitleText}>Delete Confirmation</Text>
+            <Text>Are you sure you want to delete this item?</Text>
           </View>
-          <View style={style.buttonContainer}>
+          <View style={style.buttonsContainer}>
+            <TouchableOpacity style={style.deleteButton} onPress={handleDelete}>
+              <Text style={style.buttonsText}>Delete</Text>
+            </TouchableOpacity>
             <TouchableOpacity
-              style={style.addButton}
-              onPress={() => {
-                handleDelete();
-              }}
+              style={style.cancelButton}
+              onPress={() => setIsDeleting(false)}
             >
-              <Text>Delete</Text>
+              <Text style={style.buttonsText}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -55,6 +50,7 @@ function ExpenseListScreen({ navigation }) {
 
   console.log(`ID: ${itemIdToEdit}`);
   console.log(`Item to edit: ${itemToEdit}`);
+  console.log(`Editing: ${isEditing}`);
   console.log(`Deleting state: ${isDeleting}`);
 
   useEffect(() => {
@@ -214,7 +210,6 @@ const style = StyleSheet.create({
   expenseItemContainer: {
     width: 400,
   },
-
   background: {
     justifyContent: "center",
     alignItems: "center",
@@ -222,33 +217,44 @@ const style = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.4)",
   },
   container: {
-    padding: 15,
-    width: 300,
-    height: 350,
+    padding: 30,
+    width: 350,
+    height: 185,
+    gap: 20,
     backgroundColor: "white",
     borderRadius: 10,
   },
-  exitButtonContainer: {
-    alignItems: "flex-end",
+  textContainer: {
+    gap: 5,
   },
-  exitButtonText: {
-    borderWidth: 1,
-    padding: 5,
-    borderRadius: 5,
+  deleteTitleText: {
+    fontSize: 20,
+    fontWeight: "bold",
   },
-  buttonContainer: {
+  buttonsContainer: {
+    width: "100%",
+    height: 50,
+    flexDirection: "row",
+    gap: 10,
+  },
+  deleteButton: {
     flex: 1,
-    borderWidth: 1,
-    borderColor: "orange",
-    justifyContent: "flex-end",
-  },
-  addButton: {
-    height: 30,
-    borderWidth: 1,
-    marginTop: 15,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
+    backgroundColor: "#800000",
+  },
+  cancelButton: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "black",
+    borderRadius: 10,
+  },
+  buttonsText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "white",
   },
 });
 

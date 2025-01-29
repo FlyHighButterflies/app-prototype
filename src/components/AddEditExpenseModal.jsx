@@ -8,6 +8,7 @@ import {
   TextInput,
   StyleSheet,
 } from "react-native";
+import ExitIcon from "react-native-vector-icons/Feather";
 
 function AddEditExpenseModal({
   isEditing,
@@ -61,38 +62,46 @@ function AddEditExpenseModal({
         <View style={style.container}>
           <View style={style.exitButtonContainer}>
             <TouchableOpacity onPress={handleExit}>
-              <Text style={style.exitButtonText}>Exit</Text>
+              <ExitIcon name="x" size={25} />
             </TouchableOpacity>
           </View>
-          <View>
-            <Text>Category</Text>
-            <TextInput
-              placeholder="Category"
-              value={category}
-              onChangeText={setCategory}
-              style={style.inputContainer}
-            />
-            <Text>Item</Text>
-            <TextInput
-              placeholder="Description"
-              value={description}
-              onChangeText={setDescription}
-              style={style.inputContainer}
-            />
-            <Text>Date</Text>
-            <TextInput
-              placeholder="Date"
-              value={date}
-              onChangeText={setDate}
-              style={style.inputContainer}
-            />
-            <Text>Amount</Text>
-            <TextInput
-              placeholder="Amount"
-              value={amount.toString()}
-              onChangeText={setAmount}
-              style={style.inputContainer}
-            />
+          <View style={style.allInputsContainer}>
+            <View style={style.inputContainer}>
+              <Text style={style.inputLabel}>Category</Text>
+              <TextInput
+                placeholder="Category"
+                value={category}
+                onChangeText={setCategory}
+                style={style.inputField}
+              />
+            </View>
+            <View style={style.inputContainer}>
+              <Text style={style.inputLabel}>Item</Text>
+              <TextInput
+                placeholder="Description"
+                value={description}
+                onChangeText={setDescription}
+                style={style.inputField}
+              />
+            </View>
+            <View style={style.inputContainer}>
+              <Text style={style.inputLabel}>Date</Text>
+              <TextInput
+                placeholder="Date"
+                value={date}
+                onChangeText={setDate}
+                style={style.inputField}
+              />
+            </View>
+            <View style={style.inputContainer}>
+              <Text style={style.inputLabel}>Amount</Text>
+              <TextInput
+                placeholder="Amount"
+                value={amount.toString()}
+                onChangeText={setAmount}
+                style={style.inputField}
+              />
+            </View>
           </View>
           <View style={style.buttonContainer}>
             <TouchableOpacity
@@ -102,7 +111,7 @@ function AddEditExpenseModal({
                 setIsEditing(false);
               }}
             >
-              <Text>{buttonText}</Text>
+              <Text style={style.buttonText}>{buttonText}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -120,10 +129,11 @@ const style = StyleSheet.create({
   },
   container: {
     padding: 15,
-    width: 300,
-    height: 350,
-    backgroundColor: "white",
-    borderRadius: 10,
+    paddingHorizontal: 25,
+    width: 390,
+    height: 512,
+    backgroundColor: "#ededeb",
+    borderRadius: 30,
   },
   exitButtonContainer: {
     alignItems: "flex-end",
@@ -133,25 +143,43 @@ const style = StyleSheet.create({
     padding: 5,
     borderRadius: 5,
   },
+  allInputsContainer: {
+    width: 340,
+    alignItems: "center",
+    gap: 10,
+    marginTop: 5,
+  },
   inputContainer: {
+    width: "100%",
+    gap: 3,
+  },
+  inputLabel: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  inputField: {
     borderWidth: 1,
-    height: 40,
-    padding: 10,
-    borderRadius: 5,
+    height: 56,
+    padding: 15,
+    borderRadius: 20,
+    backgroundColor: "white",
   },
   buttonContainer: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: "orange",
-    justifyContent: "flex-end",
+    width: 340,
+    height: 56,
+    marginTop: 25,
   },
   addButton: {
-    height: 30,
-    borderWidth: 1,
-    marginTop: 15,
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 10,
+    borderRadius: 20,
+    backgroundColor: "#800000",
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "white",
   },
 });
 
