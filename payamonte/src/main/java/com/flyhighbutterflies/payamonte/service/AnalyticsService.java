@@ -11,12 +11,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class AnalyticsService {
+public class AnalyticsService implements IAnalyticsService {
 
     @Autowired
     private ExpenseRepository expenseRepository;
 
     // Fetch total expenses for today for a specific user
+    @Override
     public Double getDailyExpense(Long userId) {
         LocalDate today = LocalDate.now();
         return expenseRepository.findAll().stream()
@@ -26,6 +27,7 @@ public class AnalyticsService {
     }
 
     // Fetch total expenses for the current week for a specific user
+    @Override
     public Double getWeeklyExpense(Long userId) {
         LocalDate today = LocalDate.now();
         LocalDate startOfWeek = today.with(java.time.DayOfWeek.MONDAY);
@@ -39,6 +41,7 @@ public class AnalyticsService {
     }
 
     // Fetch total expenses for the current month for a specific user
+    @Override
     public Double getMonthlyExpense(Long userId) {
         LocalDate today = LocalDate.now();
         LocalDate startOfMonth = today.with(TemporalAdjusters.firstDayOfMonth());
@@ -52,6 +55,7 @@ public class AnalyticsService {
     }
 
     // Fetch total expenses for the current year for a specific user
+    @Override
     public Double getAnnualExpense(Long userId) {
         LocalDate today = LocalDate.now();
         LocalDate startOfYear = today.with(TemporalAdjusters.firstDayOfYear());
@@ -65,6 +69,7 @@ public class AnalyticsService {
     }
 
     // Fetch total expenses grouped by category for a specific user
+    @Override
     public Map<String, Double> getExpenseByCategory(Long userId) {
         return expenseRepository.findAll().stream()
                 .filter(expense -> expense.getUser().getUserId().equals(userId))
