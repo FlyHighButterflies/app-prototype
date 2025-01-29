@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.time.format.TextStyle;
 import java.util.Locale;
@@ -57,19 +59,6 @@ public class AnalyticsController {
         return ResponseEntity.ok(response);
     }
 
-    // Endpoint to fetch annual expenses
-    @GetMapping("/annual")
-    public ResponseEntity<Map<String, Object>> getAnnualAnalytics(@RequestParam Long userId) {
-        Double annualExpense = analyticsService.getAnnualExpense(userId);
-        LocalDate today = LocalDate.now();
-        int year = today.getYear();
-        Map<String, Object> response = new HashMap<>();
-        response.put("date", today);
-        response.put("year", year);
-        response.put("annualExpense", annualExpense != null ? annualExpense : 0);  // Prevent null
-        return ResponseEntity.ok(response);
-    }
-
     // Endpoint to fetch total expenses grouped by category
     @GetMapping("/categories")
     public ResponseEntity<Map<String, Object>> getCategoryAnalytics(@RequestParam Long userId) {
@@ -80,4 +69,32 @@ public class AnalyticsController {
         response.put("expensesByCategory", expensesByCategory != null ? expensesByCategory : new HashMap<>());  // Prevent null
         return ResponseEntity.ok(response);
     }
+
+    // Endpoint to fetch daily expenses for a specific user (Sunday to Saturday for the current week)
+    @GetMapping("/weekly/days")
+    public ResponseEntity<List<Map<String, Object>>> getWeeklyExpensesByDays(@RequestParam Long userId) {
+        LocalDate today = LocalDate.now();
+        // Fetch expenses for each day from Sunday to Saturday
+        Map<String, Double> dailyExpenses = analyticsService.getWeeklyExpensesByDays(userId, today);
+        
+        // Prepare the response in the required format
+        List<Map<String, Object>> responseList = new ArrayList<>();
+        for (Map.Entry<String, Double> entry : dailyExpenses.entrySet()) {
+            Map<String, Object> dailyData = new HashMap<>();
+            dailyData.put("date", today.with(java.time.DayOfWeek.valueOf(entry.getKey().toUpperCase())));
+            dailyData.put("dayOfWeek", entry.getKey());
+            dailyData.put("dailyExpense", entry.getValue());
+            responseList.add(dailyData);
+        }
+
+        return ResponseEntity.ok(responseList);
+    }
+
+    // Endpoint to fetch monthly expenses for a specific user (January to December)
+    @GetMapping("/monthly/all")
+    public ResponseEntity<List<Map<String, Object>>> getYearlyMonthlyExpenses(@RequestParam Long userId) {
+        List<Map<String, Object>> responseList = analyticsService.getYearlyMonthlyExpenses(userId);
+        return ResponseEntity.ok(responseList);
+    }
+
 }
