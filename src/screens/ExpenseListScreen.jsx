@@ -12,21 +12,20 @@ import ExpenseItem from "components/ExpenseItem";
 import AddEditExpenseModal from "components/AddEditExpenseModal";
 import { useUserID } from "context/UserContext";
 import axios from "axios";
+import LeftArrowIcon from "react-native-vector-icons/FontAwesome6";
 
-function DeleteExpenseModal({
-  isDeleting,
-  setIsDeleting,
-  handleDelete,
-}) {
+function DeleteExpenseModal({ isDeleting, setIsDeleting, handleDelete }) {
   return (
     <Modal visible={isDeleting} transparent={true}>
       <View style={style.background}>
         <View style={style.container}>
-          <View style={style.exitButtonContainer}>
-            <TouchableOpacity onPress={() => setIsDeleting(false)}>
-              <Text style={style.exitButtonText}>Exit</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            style={style.exitButtonContainer}
+            onPress={() => setIsDeleting(false)}
+          >
+            <Text style={style.exitButtonText}>Exit</Text>
+          </TouchableOpacity>
+
           <View>
             <Text>Do you really want to delete this item?</Text>
           </View>
@@ -135,36 +134,38 @@ function ExpenseListScreen({ navigation }) {
     <SafeAreaView style={style.screenContainer}>
       <View style={style.headerContainer}>
         <TouchableOpacity
-          style={style.headerBackContainer}
+          style={style.backContainer}
           onPress={() => {
             navigation.goBack();
           }}
         >
-          <Text>Back</Text>
+          <LeftArrowIcon name={"arrow-left"} size={16} />
         </TouchableOpacity>
         <View>
           <Text style={style.headerText}>Expense List</Text>
         </View>
       </View>
       <ScrollView
-        style={style.expenseListContainer}
+        style={style.expenseListOuterContainer}
         showsVerticalScrollIndicator={false}
       >
-        {transactions.map((item) => {
-          return (
-            <ExpenseItem
-              style={style.expenseItemContainer}
-              key={item.id}
-              id={item.id}
-              item={item}
-              editable={true}
-              setIsEditing={setIsEditing}
-              setIsDeleting={setIsDeleting}
-              setItemIdToEdit={setItemIdToEdit}
-              setItemToEdit={setItemToEdit}
-            />
-          );
-        })}
+        <View style={style.expenseListInnerContainer}>
+          {transactions.map((item) => {
+            return (
+              <ExpenseItem
+                style={style.expenseItemContainer}
+                key={item.id}
+                id={item.id}
+                item={item}
+                editable={true}
+                setIsEditing={setIsEditing}
+                setIsDeleting={setIsDeleting}
+                setItemIdToEdit={setItemIdToEdit}
+                setItemToEdit={setItemToEdit}
+              />
+            );
+          })}
+        </View>
       </ScrollView>
 
       <AddEditExpenseModal
@@ -185,32 +186,33 @@ function ExpenseListScreen({ navigation }) {
 
 const style = StyleSheet.create({
   screenContainer: {
-    padding: 20,
+    padding: 25,
     height: "100%",
   },
   headerContainer: {
     flexDirection: "row",
-    // borderWidth: 1,
-    // borderColor: "red",
   },
-  headerBackContainer: {
-    borderWidth: 1,
-    borderColor: "green",
-    marginRight: 20,
+  backContainer: {
+    width: 30,
+    height: 30,
     justifyContent: "center",
+    alignItems: "center",
+    marginRight: 20,
+    borderRadius: 999999999,
+    backgroundColor: "white",
   },
   headerText: {
     fontWeight: "bold",
-    fontSize: 20,
+    fontSize: 22,
   },
-  expenseListContainer: {
-    marginTop: 10,
-    // borderWidth: 1,
+  expenseListOuterContainer: {
+    marginTop: 20,
+  },
+  expenseListInnerContainer: {
+    gap: 10,
   },
   expenseItemContainer: {
-    marginBottom: 10,
-    borderRadius: 10,
-    // borderWidth: 1,
+    width: 400,
   },
 
   background: {

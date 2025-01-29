@@ -126,21 +126,23 @@ function HomeScreen() {
             </TouchableOpacity>
           </View>
           <ScrollView
-            style={style.transactionsListContainer}
+            style={style.transactionsListOuterContainer}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
               flexDirection: "column-reverse",
             }}
           >
-            {recentTransactions.map((item) => {
-              return (
-                <ExpenseItem
-                  style={style.expenseItemContainer}
-                  key={item.id}
-                  item={item}
-                />
-              );
-            })}
+            <View style={style.transactionsListInnerContainer}>
+              {recentTransactions.map((item) => {
+                return (
+                  <ExpenseItem
+                    style={style.expenseItemContainer}
+                    key={item.id}
+                    item={item}
+                  />
+                );
+              })}
+            </View>
           </ScrollView>
         </View>
       </SafeAreaView>
@@ -279,12 +281,11 @@ const style = StyleSheet.create({
   viewAllText: {
     fontWeight: "bold",
   },
-  transactionsListContainer: {
-    marginTop: 10,
+  transactionsListOuterContainer: {
+    marginTop: 20,
   },
-  expenseItemContainer: {
-    marginBottom: 10,
-    borderRadius: 10,
+  transactionsListInnerContainer: {
+    gap: 10,
   },
 });
 

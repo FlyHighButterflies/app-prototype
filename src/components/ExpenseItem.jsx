@@ -2,6 +2,8 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import BagIcon from "react-native-vector-icons/MaterialIcons";
 import PesoIcon from "react-native-vector-icons/FontAwesome6";
+import EditIcon from "react-native-vector-icons/MaterialIcons";
+import TrashIcon from "react-native-vector-icons/FontAwesome";
 
 function ExpenseItem({
   style: outerStyle,
@@ -14,7 +16,7 @@ function ExpenseItem({
   setItemToEdit,
 }) {
   return (
-    <View style={{ ...outerStyle, ...style.itemContainer }}>
+    <View style={{ ...style.itemContainer, ...outerStyle }}>
       <View style={style.infoContainer}>
         <View style={style.iconContainer}>
           <BagIcon name={"shopping-bag"} size={24} color={"#800000"} />
@@ -27,7 +29,7 @@ function ExpenseItem({
           <Text style={style.amount}>
             <PesoIcon name={"peso-sign"} size={15} />
             {item.amount}
-            </Text>
+          </Text>
         </View>
       </View>
 
@@ -62,7 +64,7 @@ function EditOptionIcons({
           setItemToEdit(item);
         }}
       >
-        <Text style={{ ...style.optionText, color: "green" }}>E</Text>
+        <EditIcon name="edit" size={20} color="green" />
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => {
@@ -70,7 +72,7 @@ function EditOptionIcons({
           setItemIdToEdit(id);
         }}
       >
-        <Text style={{ ...style.optionText, color: "red" }}>D</Text>
+        <TrashIcon name="trash" size={20} color="red" />
       </TouchableOpacity>
     </View>
   );
@@ -82,8 +84,9 @@ const style = StyleSheet.create({
     height: 81,
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
     backgroundColor: "white",
+    borderRadius: 20,
   },
   infoContainer: {
     flex: 1,
@@ -112,11 +115,12 @@ const style = StyleSheet.create({
     fontWeight: "bold",
   },
   itemModifyContainer: {
+    width: 60,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     gap: 20,
-    width: 60,
+    marginLeft: 20,
   },
   optionText: {
     fontSize: 20,
