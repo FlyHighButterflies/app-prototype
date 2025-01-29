@@ -13,11 +13,7 @@ import AddEditExpenseModal from "components/AddEditExpenseModal";
 import { useUserID } from "context/UserContext";
 import axios from "axios";
 
-function DeleteExpenseModal({
-  isDeleting,
-  setIsDeleting,
-  handleDelete,
-}) {
+function DeleteExpenseModal({ isDeleting, setIsDeleting, handleDelete }) {
   return (
     <Modal visible={isDeleting} transparent={true}>
       <View style={style.background}>

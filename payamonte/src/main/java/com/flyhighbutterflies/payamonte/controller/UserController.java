@@ -1,5 +1,6 @@
 package com.flyhighbutterflies.payamonte.controller;
 
+import com.flyhighbutterflies.payamonte.service.BudgetService;
 import com.flyhighbutterflies.payamonte.model.User;
 import com.flyhighbutterflies.payamonte.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private BudgetService budgetService;
 
     // Sign-Up (Register a new user)
     @PostMapping("/sign-up")
@@ -71,5 +75,12 @@ public class UserController {
             return ResponseEntity.ok(response);
         }
         return ResponseEntity.status(404).body(response);
+    }
+
+    // Get remaining balance for user
+    @GetMapping("/{id}/remaining-balance")
+    public ResponseEntity<Double> getRemainingBalance(@PathVariable Long id) {
+        Double remainingBalance = budgetService.getRemainingBalance(id);
+        return ResponseEntity.ok(remainingBalance);
     }
 }

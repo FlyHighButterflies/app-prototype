@@ -6,19 +6,29 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 @RestController
-@RequestMapping("/analytics")
+@RequestMapping("/api/analytics")
 public class AnalyticsController {
 
     @Autowired
     private AnalyticsService analyticsService;
 
-    // Endpoint to fetch daily expenses
+    // Endpoint to fetch daily expenses for a specific user
     @GetMapping("/daily")
-    public ResponseEntity<Double> getDailyAnalytics() {
-        Double dailyExpense = analyticsService.getDailyExpense();
-        return ResponseEntity.ok(dailyExpense);
+    public ResponseEntity<Map<String, Object>> getDailyAnalytics(@RequestParam Long userId) {
+        Double dailyExpense = analyticsService.getDailyExpense(userId);
+        LocalDate today = LocalDate.now();
+        String dayOfWeek = today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+        Map<String, Object> response = new HashMap<>();
+        response.put("date", today);
+        response.put("dayOfWeek", dayOfWeek);
+        response.put("dailyExpense", dailyExpense);
+        return ResponseEntity.ok(response);
     }
 
     // Endpoint to fetch weekly expenses
@@ -42,10 +52,10 @@ public class AnalyticsController {
         return ResponseEntity.ok(annualExpense);
     }
 
-    // Endpoint to fetch total expenses grouped by category
-    @GetMapping("/categories")
-    public ResponseEntity<Map<String, Double>> getCategoryAnalytics() {
-        Map<String, Double> expensesByCategory = analyticsService.getExpenseByCategory();
-        return ResponseEntity.ok(expensesByCategory);
-    }
+    // // Endpoint to fetch total expenses grouped by category
+    // @GetMapping("/categories")
+    // public ResponseEntity<Map<String, Double>> getCategoryAnalytics() {
+    //     Map<String, Double> expensesByCategory = analyticsService.getExpenseByCategory();
+    //     return ResponseEntity.ok(expensesByCategory);
+    // }
 }

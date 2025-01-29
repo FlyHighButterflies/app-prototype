@@ -2,6 +2,7 @@ package com.flyhighbutterflies.payamonte.controller;
 
 import com.flyhighbutterflies.payamonte.model.Budget;
 import com.flyhighbutterflies.payamonte.service.BudgetService;
+import com.flyhighbutterflies.payamonte.model.Expense;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,11 @@ public class BudgetController {
     public List<Budget> getAllBudgets() {
         List<Budget> budgets = budgetService.getAllBudgets();
         // Calculate and set the remaining balance for each budget/user
-        budgets.forEach(budget -> budget.setRemainingBalance(budget.getRemainingBalance()));
+        budgets.forEach(budget -> {
+            double totalExpense = budget.getUser().getExpenses().stream().mapToDouble(Expense::getAmount).sum();
+            budget.setTotalExpense(totalExpense);
+            budget.setRemainingBalance(budget.getTotalBalance() - totalExpense);
+        });
         return budgets;
     }
 
@@ -27,8 +32,17 @@ public class BudgetController {
     public ResponseEntity<Budget> getBudgetById(@PathVariable Long id) {
         Budget budget = budgetService.getBudgetById(id);
         // Calculate and set the remaining balance for the specific budget/user
-        budget.setRemainingBalance(budget.getRemainingBalance());
+        double totalExpense = budget.getUser().getExpenses().stream().mapToDouble(Expense::getAmount).sum();
+        budget.setTotalExpense(totalExpense);
+        budget.setRemainingBalance(budget.getTotalBalance() - totalExpense);
         return ResponseEntity.ok(budget);
+    }
+
+    @GetMapping("/{id}/remaining-balance")
+    public ResponseEntity<Double> getRemainingBalance(@PathVariable Long id) {
+        Budget budget = budgetService.getBudgetById(id);
+        Double remainingBalance = budget.getRemainingBalance();
+        return ResponseEntity.ok(remainingBalance);
     }
 
     @PostMapping
