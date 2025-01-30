@@ -48,7 +48,6 @@ function EditBudgetModal({
             <View style={style.inputContainer}>
               <Text style={style.inputLabel}>Your Budget</Text>
               <TextInput
-                // placeholder="10000"
                 value={money.toString()}
                 onChangeText={setMoney}
                 style={style.inputField}
@@ -57,10 +56,12 @@ function EditBudgetModal({
             <View style={style.setBudgetButtonContainer}>
               <TouchableOpacity
                 style={style.setBudgetButton}
-                onPressOut={() => {
-                  if (parseFloat(money)) {
-                    setBudget(parseFloat(money) || budget);
-                    putBudget(parseFloat(money) || budget);
+                onPress={() => {
+                  const parsedMoney = parseFloat(money);
+                  if (!isNaN(parsedMoney) && /^\d+(\.\d+)?$/.test(money)) {
+                    console.log(`IS SETTING BUDGET`);
+                    setBudget(parsedMoney ?? budget);
+                    putBudget(parsedMoney ?? budget);
                   }
                   setIsVisible(false);
                 }}
@@ -326,13 +327,7 @@ function HomeScreen() {
           >
             {/* <View style={style.transactionsListInnerContainer}> */}
             {recentTransactions.map((item) => {
-              return (
-                <ExpenseItem
-                  style={style.expenseItemContainer}
-                  key={item.id}
-                  item={item}
-                />
-              );
+              return <ExpenseItem key={item.id} item={item} />;
             })}
             {/* </View> */}
           </ScrollView>

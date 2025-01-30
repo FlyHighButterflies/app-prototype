@@ -176,7 +176,7 @@ function NewAnalyticsScreen() {
                         return value.slice(0, 3); // Convert "January" -> "Jan", etc.
                       }
                     },
-                    grid: { stroke: "none" },
+                    grid: { stroke: "transparent" },
                   }}
                 >
                   {({ points, chartBounds }) => (
