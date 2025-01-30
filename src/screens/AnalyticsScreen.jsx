@@ -75,6 +75,7 @@ function NewAnalyticsScreen() {
   const [weeklyData, setWeeklyData] = useState([]);
   const [monthlyData, setMonthlyData] = useState([]);
   const [selectedOption, setSelectedOption] = useState("weekly");
+  const [isOnNotifications, setIsOnNotifications] = useState(false);
   const userId = useUserID();
 
   useEffect(() => {
@@ -120,9 +121,14 @@ function NewAnalyticsScreen() {
             <TouchableHighlight
               style={style.notificationIconContainer}
               activeOpacity={0.5}
-              underlayColor="#80000080"
+              underlayColor="white"
+              onPress={() => setIsOnNotifications((prevState) => !prevState)}
             >
-              <BellIcon name={"notifications"} size={25} color={maroon} />
+              <BellIcon
+                name={"notifications"}
+                size={25}
+                color={isOnNotifications ? maroon : "gray"}
+              />
             </TouchableHighlight>
           </View>
           <View

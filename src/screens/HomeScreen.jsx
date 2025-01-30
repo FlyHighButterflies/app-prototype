@@ -98,6 +98,7 @@ function HomeScreen() {
   const [currentTotalExpense, setCurrentTotalExpense] = useState(0);
   const [isAddExpense, setIsAddExpense] = useState(false);
   const [isEditBudget, setIsEditBudget] = useState(false);
+  const [isOnNotifications, setIsOnNotifications] = useState(false);
   const userId = useUserID();
   const navigation = useNavigation();
   const d = new Date();
@@ -261,9 +262,14 @@ function HomeScreen() {
             <TouchableHighlight
               style={style.notificationContainer}
               activeOpacity={0.5}
-              underlayColor="#80000080"
+              underlayColor="white"
+              onPress={() => setIsOnNotifications((prevState) => !prevState)}
             >
-              <BellIcon name={"notifications"} size={25} color={maroon} />
+              <BellIcon
+                name={"notifications"}
+                size={25}
+                color={isOnNotifications ? maroon : "gray"}
+              />
             </TouchableHighlight>
           </View>
           <View style={style.dateContainer}>
