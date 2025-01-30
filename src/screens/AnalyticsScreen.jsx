@@ -15,7 +15,6 @@ import MoonIcon from "react-native-vector-icons/Ionicons";
 import PesoIcon from "react-native-vector-icons/FontAwesome6";
 import BellIcon from "react-native-vector-icons/Ionicons";
 import { Bar, CartesianChart } from "victory-native";
-// import roboto from "./Roboto-Regular.ttf";
 import roboto from "../assets/fonts/Roboto-Regular.ttf";
 import { useFont } from "@shopify/react-native-skia";
 import SwitchSelector from "react-native-switch-selector";
@@ -151,7 +150,7 @@ function NewAnalyticsScreen() {
                       : "monthlyExpense",
                   ]}
                   domain={{
-                    x: [0, selectedOption === "weekly" ? 6 : 11], // Adjusted for weekly (0-6) and monthly (0-11)
+                    x: [0, selectedOption === "weekly" ? 6 : 11],
                     y: [
                       0,
                       Math.max(
@@ -166,22 +165,9 @@ function NewAnalyticsScreen() {
                   padding={10}
                   xAxis={{
                     font: myFont,
-                    formatXLabel: (value) => {
-                      if (selectedOption === "weekly") {
-                        const shortDays = {
-                          Sunday: "Sun",
-                          Monday: "Mon",
-                          Tuesday: "Tue",
-                          Wednesday: "Wed",
-                          Thursday: "Thu",
-                          Friday: "Fri",
-                          Saturday: "Sat",
-                        };
-                        return shortDays[value] || value; // Convert full name to short, fallback to original
-                      } else {
-                        return value.slice(0, 3); // Convert "January" -> "Jan", etc.
-                      }
-                    },
+                    // formatXLabel: (value) => {
+                    //   return value.slice(0, 3);
+                    // },
                     grid: { stroke: "transparent" },
                   }}
                 >
@@ -207,6 +193,7 @@ function NewAnalyticsScreen() {
                   )}
                 </CartesianChart>
               </View>
+
               <View style={style.switchSelectorContainer}>
                 <SwitchSelector
                   options={[
@@ -267,7 +254,6 @@ const style = StyleSheet.create({
     justifyContent: "center",
     padding: 10,
     borderRadius: 20,
-    // backgroundColor: "white",
   },
   notificationIconContainer: {
     width: 35,
@@ -285,14 +271,12 @@ const style = StyleSheet.create({
   chartContainer: {
     height: 234,
     width: 391,
-    // borderWidth: 1,
     backgroundColor: "white",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
   },
   switchSelectorContainer: {
     width: 391,
-    // borderWidth: 1,
   },
   transactionsContainer: {
     width: 447,
