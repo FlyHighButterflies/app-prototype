@@ -48,11 +48,6 @@ function ExpenseListScreen({ navigation }) {
   const [itemIdToEdit, setItemIdToEdit] = useState(null);
   const userId = useUserID();
 
-  console.log(`ID: ${itemIdToEdit}`);
-  console.log(`Item to edit: ${itemToEdit}`);
-  console.log(`Editing: ${isEditing}`);
-  console.log(`Deleting state: ${isDeleting}`);
-
   useEffect(() => {
     fetchExpenses();
   }, []);

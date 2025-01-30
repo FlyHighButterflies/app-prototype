@@ -123,10 +123,6 @@ const style = StyleSheet.create({
     gap: 20,
     marginLeft: 20,
   },
-  optionText: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
 });
 
 export default ExpenseItem;

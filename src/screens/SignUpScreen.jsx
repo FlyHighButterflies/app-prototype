@@ -50,7 +50,7 @@ function SignUpScreen() {
       totalBalance: 0,
       totalExpense: 0,
       user: {
-        userId
+        userId,
       },
     };
 
@@ -59,7 +59,6 @@ function SignUpScreen() {
         "http://10.0.2.2:8080/api/budgets",
         defaultBudget
       );
-      console.log("Default budget created successfully:", res.data);
     } catch (err) {
       console.log("Error creating budget: ", err);
     }
@@ -67,7 +66,6 @@ function SignUpScreen() {
 
   useEffect(() => {
     if (response === "Sign-Up successful!") {
-      console.log("Created an account");
       const fetchUserID = async () => {
         try {
           const res = await axios.get("http://10.0.2.2:8080/api/users");

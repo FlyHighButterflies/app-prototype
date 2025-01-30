@@ -106,10 +106,6 @@ function HomeScreen() {
   const date = d.getDate();
   const month = d.toLocaleString("default", { month: "long" });
 
-  console.log(`Budget: ${budget}`);
-  console.log(`Total expense: ${totalExpense}`);
-  console.log(`Balance: ${balance}`);
-
   useEffect(() => {
     fetchExpenses();
   }, []);
@@ -135,7 +131,7 @@ function HomeScreen() {
     };
 
     fetchUpdatedValues();
-  }, [transactions, budget, currentTotalExpense]); // Fetch updated values when transactions change
+  }, [transactions, budget, currentTotalExpense]);
 
   useEffect(() => {
     if (Array.isArray(transactions)) {
@@ -175,11 +171,9 @@ function HomeScreen() {
         expense
       );
       if (response.data) {
-        // Update local state after successful API response
         const newTransactions = [...transactions, response.data];
         setTransactions(newTransactions);
 
-        // Calculate updated total expense and balance
         const total = newTransactions.reduce(
           (total, item) => total + item.amount,
           0
@@ -188,7 +182,6 @@ function HomeScreen() {
         setBalance(budget - total);
         setRecentTransactions(newTransactions.slice(-8));
 
-        // Refetch expenses to ensure consistency
         fetchExpenses();
       } else {
         console.error("Error: Expected a transaction object");
@@ -513,7 +506,6 @@ const style = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    // borderWidth: 1,
   },
   transactionsTitleText: {
     fontSize: 18,
@@ -542,7 +534,6 @@ const style = StyleSheet.create({
     alignItems: "center",
   },
   addExpenseButton: {
-    // position: "absolute",
     width: 60,
     height: 60,
     backgroundColor: "#800000",

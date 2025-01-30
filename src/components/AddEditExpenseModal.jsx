@@ -138,11 +138,6 @@ const style = StyleSheet.create({
   exitButtonContainer: {
     alignItems: "flex-end",
   },
-  exitButtonText: {
-    borderWidth: 1,
-    padding: 5,
-    borderRadius: 5,
-  },
   allInputsContainer: {
     width: 340,
     alignItems: "center",
