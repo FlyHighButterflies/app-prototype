@@ -13,6 +13,7 @@ import AddEditExpenseModal from "components/AddEditExpenseModal";
 import { useUserID } from "context/UserContext";
 import axios from "axios";
 import LeftArrowIcon from "react-native-vector-icons/FontAwesome6";
+import ToastNotification from "components/ToastNotification";
 
 function DeleteExpenseModal({ isDeleting, setIsDeleting, handleDelete }) {
   return (
@@ -46,6 +47,7 @@ function ExpenseListScreen({ navigation }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [itemToEdit, setItemToEdit] = useState({});
   const [itemIdToEdit, setItemIdToEdit] = useState(null);
+  const [isOnNotifications, setIsOnNotifications] = useState(false);
   const userId = useUserID();
 
   useEffect(() => {
@@ -123,6 +125,7 @@ function ExpenseListScreen({ navigation }) {
 
   return (
     <SafeAreaView style={style.screenContainer}>
+      {isOnNotifications && <ToastNotification key={isOnNotifications} />}
       <View style={style.headerContainer}>
         <TouchableOpacity
           style={style.backContainer}
@@ -177,11 +180,16 @@ function ExpenseListScreen({ navigation }) {
 
 const style = StyleSheet.create({
   screenContainer: {
+    position: "relative",
+    justifyContent: "center",
+    alignItems: "center",
     padding: 25,
     height: "100%",
   },
   headerContainer: {
+    width: "100%",
     flexDirection: "row",
+    alignItems: "flex-start"
   },
   backContainer: {
     width: 30,

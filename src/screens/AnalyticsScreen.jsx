@@ -19,6 +19,7 @@ import roboto from "../assets/fonts/Roboto-Regular.ttf";
 import { useFont } from "@shopify/react-native-skia";
 import SwitchSelector from "react-native-switch-selector";
 import { useFocusEffect } from "@react-navigation/native";
+import AnalyticsNotification from "components/AnalyticsNotification";
 
 function DailyExpenseItem({ item }) {
   const dateObject = new Date(item.date);
@@ -77,6 +78,8 @@ function NewAnalyticsScreen() {
   const [isOnNotifications, setIsOnNotifications] = useState(false);
   const userId = useUserID();
 
+  console.log(`Notification state: ${isOnNotifications}`);
+
   useEffect(() => {
     getWeekly();
     getMonthly();
@@ -117,6 +120,9 @@ function NewAnalyticsScreen() {
       <SafeAreaView>
         <View style={style.dashboardContainer}>
           <View style={style.notificationsContainer}>
+            {isOnNotifications && (
+              <AnalyticsNotification key={isOnNotifications} />
+            )}
             <TouchableHighlight
               style={style.notificationIconContainer}
               activeOpacity={0.5}
@@ -247,13 +253,14 @@ const style = StyleSheet.create({
     zIndex: 1,
     paddingHorizontal: 18,
     paddingTop: 21,
+    alignItems: "center",
   },
   notificationsContainer: {
-    width: 405,
+    position: "relative",
+    width: 391,
     height: 65,
     justifyContent: "center",
     padding: 10,
-    borderRadius: 20,
   },
   notificationIconContainer: {
     width: 35,
@@ -279,6 +286,7 @@ const style = StyleSheet.create({
     width: 391,
   },
   transactionsContainer: {
+    position: "relative",
     width: 447,
     height: 465,
     marginTop: -60,

@@ -21,6 +21,7 @@ import EditBudgetIcon from "react-native-vector-icons/AntDesign";
 import ExitIcon from "react-native-vector-icons/Feather";
 import AddBudgetIcon from "react-native-vector-icons/AntDesign";
 import AddEditExpenseModal from "components/AddEditExpenseModal";
+import ToastNotification from "components/ToastNotification";
 
 function EditBudgetModal({
   isVisible,
@@ -242,7 +243,14 @@ function HomeScreen() {
   return (
     <View>
       <StatusBar barStyle="dark-content" backgroundColor="white" />
-      <SafeAreaView>
+      <SafeAreaView
+        style={{
+          position: "relative",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {isOnNotifications && <ToastNotification key={isOnNotifications} />}
         <View style={style.dashboardContainer}>
           <View style={style.profileContainer}>
             <View style={style.profileIconContainer}>
