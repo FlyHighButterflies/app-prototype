@@ -112,18 +112,6 @@ function HomeScreen() {
     fetchExpenses();
   }, []);
 
-  // useEffect(() => {
-  //   if (Array.isArray(transactions)) {
-  //     const total = transactions.reduce(
-  //       (total, item) => total + item.amount,
-  //       0
-  //     );
-  //     setTotalExpense(total);
-  //     setBalance(budget - total);
-  //     setRecentTransactions(transactions.slice(-10));
-  //   }
-  // }, [transactions]);
-
   useFocusEffect(
     useCallback(() => {
       fetchExpenses();
@@ -145,7 +133,7 @@ function HomeScreen() {
     };
 
     fetchUpdatedValues();
-  }, [transactions, budget, totalExpense]); // Fetch updated values when transactions change
+  }, [transactions, budget, currentTotalExpense]); // Fetch updated values when transactions change
 
   useEffect(() => {
     if (Array.isArray(transactions)) {
@@ -154,7 +142,6 @@ function HomeScreen() {
         0
       );
       setCurrentTotalExpense(total);
-      setTotalExpense(total);
       editExpense(total);
     }
   }, [transactions]);
