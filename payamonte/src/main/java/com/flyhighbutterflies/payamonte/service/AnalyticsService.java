@@ -5,6 +5,7 @@ import com.flyhighbutterflies.payamonte.repository.ExpenseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Map;
@@ -69,25 +70,33 @@ public class AnalyticsService implements IAnalyticsService {
     }
 
     // Fetch weekly expenses (Sunday to Saturday) for a specific user
-    @Override
-    public Map<String, Double> getWeeklyExpensesByDays(Long userId, LocalDate today) {
-        LocalDate startOfWeek = today.with(java.time.DayOfWeek.SUNDAY);  // Start of the week (Sunday)
-        Map<String, Double> dailyExpenses = new HashMap<>();
+   @Override
+   public List<Map<String, Object>> getWeeklyExpensesByDays(Long userId) {
+        List<Map<String, Object>> responseList = new ArrayList<>();
+        LocalDate today = LocalDate.now();
+        LocalDate startOfWeek = today.with(java.time.temporal.TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)); 
+    
+    // Loop through the week from Sunday to Saturday
+    for (int i = 0; i < 7; i++) {
+        LocalDate day = startOfWeek.plusDays(i); 
+        String dayOfWeek = day.getDayOfWeek().getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.ENGLISH);
 
-        // Loop through the week from Sunday to Saturday
-        for (int i = 0; i < 7; i++) {
-            LocalDate day = startOfWeek.plusDays(i);  // Each day of the week
-            String dayOfWeek = day.getDayOfWeek().getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.ENGLISH); // Day of the week as string
+        
+        Map<String, Object> dailyExpenses = new HashMap<>();
+        Double dailyExpense = expenseRepository.findAll().stream()
+                .filter(expense -> expense.getUser().getUserId().equals(userId) && expense.getDate().isEqual(day))
+                .mapToDouble(Expense::getAmount)
+                .sum();
 
-            // Get the expense for that specific day
-            Double dailyExpense = expenseRepository.findAll().stream()
-                    .filter(expense -> expense.getUser().getUserId().equals(userId) && expense.getDate().isEqual(day))
-                    .mapToDouble(Expense::getAmount)
-                    .sum();
-            dailyExpenses.put(dayOfWeek, dailyExpense);
-        }
-        return dailyExpenses;
+        dailyExpenses.put("date", day);
+        dailyExpenses.put("dayOfWeek", dayOfWeek);
+        dailyExpenses.put("dailyExpense", dailyExpense); 
+
+        responseList.add(dailyExpenses); 
     }
+    
+     return responseList;
+   }
 
     // Fetch total expenses for each month in the year (January to December)
     @Override
@@ -111,7 +120,7 @@ public class AnalyticsService implements IAnalyticsService {
             Map<String, Object> monthData = new HashMap<>();
             String monthName = startOfMonth.getMonth().getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.ENGLISH);
             monthData.put("monthOfYear", monthName);
-            monthData.put("monthlyExpense", monthlyExpense != null ? monthlyExpense : 0);  // Prevent null
+            monthData.put("monthlyExpense", monthlyExpense);  
             
             responseList.add(monthData);
         }
