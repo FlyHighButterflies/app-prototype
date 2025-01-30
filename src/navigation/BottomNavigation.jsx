@@ -1,8 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React from "react";
-import AnalyticsScreen from "screens/AnalyticsScreen";
 import HomeScreen from "screens/HomeScreen";
-import NewAnalyticsScreen from "screens/NewAnalyticsScreen";
+import AnalyticsScreen from "screens/AnalyticsScreen";
 import HomeIcon from "react-native-vector-icons/Feather";
 import AnalyticsIcon from "react-native-vector-icons/Ionicons";
 
@@ -36,8 +35,7 @@ function BottomNavigation() {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      {/* <Tab.Screen name="FakeAnalytics" component={AnalyticsScreen} /> */}
-      <Tab.Screen name="Analytics" component={NewAnalyticsScreen} />
+      <Tab.Screen name="Analytics" component={AnalyticsScreen} />
     </Tab.Navigator>
   );
 }
