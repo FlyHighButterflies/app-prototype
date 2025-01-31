@@ -23,11 +23,13 @@ function AddEditExpenseModal({
   const [category, setCategory] = useState("");
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
-  const [selectedRadio, setSelectedRadio] = useState("no");
+  const [selectedId, setSelectedId] = useState("no");
   const radioOptions = [
-    { id: "no", label: "No", value: "no" },
-    { id: "yes", label: "Yes", value: "yes" },
+    { id: "no", label: "No", value: false },
+    { id: "yes", label: "Yes", value: true },
   ];
+  const selectedRadioValue =
+    radioOptions.find((rb) => rb.id === selectedId)?.value || false;
   const [selectedDropDown, setSelectedDropDown] = useState(null);
   const dropDownItems = [
     { label: "Daily", value: "daily" },
@@ -36,7 +38,8 @@ function AddEditExpenseModal({
   ];
   const userId = useUserID();
 
-  console.log(selectedDropDown);
+  console.log(`Selected radio: ${selectedRadioValue}`);
+  console.log(`Selected dropdown: ${selectedDropDown}`);
 
   useEffect(() => {
     if (itemToEdit) {
@@ -124,12 +127,12 @@ function AddEditExpenseModal({
                   <RadioGroup
                     radioButtons={radioOptions}
                     onPress={(id) => {
-                      setSelectedRadio(id);
+                      setSelectedId(id);
                       if (id === "no") {
                         setSelectedDropDown(null);
                       }
                     }}
-                    selectedId={selectedRadio}
+                    selectedId={selectedId}
                     layout="row"
                   />
                 </View>
@@ -141,7 +144,7 @@ function AddEditExpenseModal({
                     value={selectedDropDown}
                     onValueChange={setSelectedDropDown}
                     items={dropDownItems}
-                    disabled={selectedRadio === "no"}
+                    disabled={!selectedRadioValue}
                   />
                 </View>
               </View>
