@@ -11,6 +11,7 @@ import {
 import ExitIcon from "react-native-vector-icons/Feather";
 import RadioGroup from "react-native-radio-buttons-group";
 import RNPickerSelect from "react-native-picker-select";
+import axios from "axios";
 
 function AddEditExpenseModal({
   isEditing,
@@ -30,17 +31,16 @@ function AddEditExpenseModal({
     { id: "no", label: "No", value: false },
     { id: "yes", label: "Yes", value: true },
   ];
-  const selectedRadioValue =
+  const isRecurring =
     radioOptions.find((rb) => rb.id === selectedId)?.value || false;
   const [selectedDropDown, setSelectedDropDown] = useState(null);
   const dropDownItems = [
-    { label: "Daily", value: "daily" },
     { label: "Weekly", value: "weekly" },
     { label: "Monthly", value: "monthly" },
   ];
   const userId = useUserID();
 
-  // console.log(`Selected radio: ${selectedRadioValue}`);
+  // console.log(`Selected radio value: ${isRecurring}`);
   // console.log(`Selected dropdown: ${selectedDropDown}`);
 
   useEffect(() => {
@@ -49,8 +49,22 @@ function AddEditExpenseModal({
       setCategory(itemToEdit.category || "");
       setDate(itemToEdit.date || "");
       setDescription(itemToEdit.description || "");
+      setSelectedId(itemToEdit.recurring ? "yes" : "no" || "no");
+      setSelectedDropDown(itemToEdit.frequency || null);
     }
   }, [itemToEdit]);
+
+  useEffect(() => {
+    if (selectedId === "yes") {
+      setSelectedDropDown("weekly");
+    }
+  }, [selectedId]);
+
+  useEffect(() => {
+    if (selectedDropDown === null) {
+      setSelectedId("no");
+    }
+  }, [selectedDropDown]);
 
   function handleExit() {
     setIsEditing(false);
@@ -58,9 +72,9 @@ function AddEditExpenseModal({
     setCategory("");
     setDate("");
     setDescription("");
-    setItemToEdit({});
-    setItemIdToEdit(null);
-    if(itemToEdit){
+    setSelectedId("no");
+    setSelectedDropDown(null);
+    if (itemToEdit) {
       setItemToEdit({});
       setItemIdToEdit(null);
     }
@@ -74,12 +88,34 @@ function AddEditExpenseModal({
       description,
       user: { userId },
     };
-    onSave(expense);
+    // if (itemToEdit && itemToEdit.frequency !== selectedDropDown) {
+    //   if (itemToEdit === null) {
+    //     async function deleteExpense() {
+    //       try {
+    //         const response = await axios.delete(
+    //           `http://10.0.2.2:8080/api/expenses/${itemIdToEdit}`
+    //         );
+    //       } catch (error) {
+    //         console.log(error);
+    //       }
+    //     }
+    //     deleteExpense();
+    //   } else if (itemToEdit.frequency !== null && selectedDropDown !== null) {
+
+    //   }
+    // }
+    onSave(expense, isRecurring, selectedDropDown);
     setIsEditing(false);
     setAmount("");
     setCategory("");
     setDate("");
     setDescription("");
+    setSelectedId("no");
+    setSelectedDropDown(null);
+    if (itemToEdit) {
+      setItemToEdit({});
+      setItemIdToEdit(null);
+    }
   };
 
   return (
@@ -152,7 +188,7 @@ function AddEditExpenseModal({
                     value={selectedDropDown}
                     onValueChange={setSelectedDropDown}
                     items={dropDownItems}
-                    disabled={!selectedRadioValue}
+                    disabled={!isRecurring}
                   />
                 </View>
               </View>

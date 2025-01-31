@@ -85,12 +85,14 @@ function ExpenseListScreen({ navigation }) {
     }
   };
 
-  const editExpense = async (expense) => {
+  const editExpense = async (expense, isRecurring, frequency) => {
+    const requestURL = `http://10.0.2.2:8080/api/expenses/${itemIdToEdit}`;
+    if (isRecurring) {
+      requestURL = `http://10.0.2.2:8080/api/expenses/recurring?frequency=${frequency}`;
+      expense = { ...expense, isRecurring };
+    }
     try {
-      const response = await axios.put(
-        `http://10.0.2.2:8080/api/expenses/${itemIdToEdit}`,
-        expense
-      );
+      const response = await axios.put(requestURL, expense);
       if (response.data) {
         setTransactions((prev) =>
           prev.map((item) =>
@@ -222,7 +224,7 @@ const style = StyleSheet.create({
   headerContainer: {
     width: "100%",
     flexDirection: "row",
-    alignItems: "flex-start"
+    alignItems: "flex-start",
   },
   backContainer: {
     width: 30,

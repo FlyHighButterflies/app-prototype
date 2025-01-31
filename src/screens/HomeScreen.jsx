@@ -95,7 +95,6 @@ function HomeScreen() {
   const [balance, setBalance] = useState(0);
   const [name, setName] = useState("");
   const [totalExpense, setTotalExpense] = useState(0);
-  const [currentTotalExpense, setCurrentTotalExpense] = useState(0);
   const [isAddExpense, setIsAddExpense] = useState(false);
   const [isEditBudget, setIsEditBudget] = useState(false);
   const [isOnNotifications, setIsOnNotifications] = useState(false);
@@ -153,27 +152,25 @@ function HomeScreen() {
     }
   };
 
-  const addExpense = async (expense) => {
+  const addExpense = async (expense, isRecurring, frequency) => {
+    let requestURL = "http://10.0.2.2:8080/api/expenses";
+    if (isRecurring) {
+      requestURL = `http://10.0.2.2:8080/api/expenses/recurring?frequency=${frequency}`;
+      expense = { ...expense, isRecurring };
+    }
+
     try {
-      const response = await axios.post(
-        "http://10.0.2.2:8080/api/expenses",
-        expense
-      );
-      if (response.data) {
+      const response = await axios.post(requestURL, expense);
+
+      if (response.status === 201 || response.status === 200) {
+        console.log("Expense added successfully");
+
         const newTransactions = [...transactions, response.data];
         setTransactions(newTransactions);
-
-        const total = newTransactions.reduce(
-          (total, item) => total + item.amount,
-          0
-        );
-        setTotalExpense(total);
-        setBalance(budget - total);
-        setRecentTransactions(newTransactions.slice(-8));
-
+        setRecentTransactions(newTransactions.slice(-10));
         fetchExpenses();
       } else {
-        console.error("Error: Expected a transaction object");
+        console.error(`Unexpected response status: ${response.status}`);
       }
     } catch (error) {
       console.error(
