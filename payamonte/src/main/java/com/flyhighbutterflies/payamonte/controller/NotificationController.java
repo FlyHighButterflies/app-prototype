@@ -47,4 +47,11 @@ public class NotificationController {
         notificationService.deleteNotification(id);
         return ResponseEntity.ok().build();
     }
+
+    // for testing purposes
+    @PostMapping("/trigger-recurring-reminder")
+    public ResponseEntity<Void> triggerRecurringExpenseReminder() {
+        notificationService.sendRecurringExpenseReminder();
+        return ResponseEntity.ok().build();
+    }
 }

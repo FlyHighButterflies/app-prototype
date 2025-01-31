@@ -35,9 +35,8 @@ public class Budget {
     // Constructors
     public Budget() {}
 
-    public Budget(Double totalBalance, Double totalExpense, LocalDateTime datetimeUpdated, User user) {
+    public Budget(Double totalBalance, LocalDateTime datetimeUpdated, User user) {
         this.totalBalance = totalBalance;
-        this.totalExpense = totalExpense;
         this.datetimeUpdated = datetimeUpdated;
         this.user = user;
     }

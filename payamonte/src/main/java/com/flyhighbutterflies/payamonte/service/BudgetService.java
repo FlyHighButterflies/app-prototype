@@ -7,6 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.time.LocalDate;
+
+// TO-DO:
+// Fix the code to dynamically display the user's remaining balance and total expenses in the user's budget table.
+// Check user model if the issue is there
 
 @Service
 public class BudgetService implements IBudgetService {
@@ -19,20 +24,22 @@ public class BudgetService implements IBudgetService {
         return budgetRepository.findAll();
     }
 
+    // TO-DO: update the code to only calculate the total expenses that are not after the current date
+    // refer to getRemainingBalance method for the correct implementation
     @Override
     public Budget getBudgetById(Long id) {
         Budget budget = budgetRepository.findById(id).orElseThrow(() -> new RuntimeException("Budget not found"));
-        double totalExpense = budget.getUser().getExpenses().stream().mapToDouble(Expense::getAmount).sum();
-        budget.setTotalExpense(totalExpense);
-        budget.setRemainingBalance(budget.getTotalBalance() - totalExpense);
+        updateBudgetExpenses(budget);
         return budget;
     }
 
+    // fix
     @Override
     public Budget createBudget(Budget budget) {
         if (budgetRepository.findByUserUserId(budget.getUser().getUserId()).isPresent()) {
             throw new RuntimeException("User already has a budget");
         }
+        updateBudgetExpenses(budget);
         return budgetRepository.save(budget);
     }
 
@@ -40,10 +47,20 @@ public class BudgetService implements IBudgetService {
     public Budget updateBudget(Long id, Budget budgetDetails) {
         Budget budget = getBudgetById(id);
         budget.setTotalBalance(budgetDetails.getTotalBalance());
-        budget.setTotalExpense(budgetDetails.getTotalExpense());
         budget.setDatetimeUpdated(budgetDetails.getDatetimeUpdated());
         budget.setUser(budgetDetails.getUser());
+        updateBudgetExpenses(budget);
         return budgetRepository.save(budget);
+    }
+
+    // fix
+    private void updateBudgetExpenses(Budget budget) {
+        double totalExpense = budget.getUser().getExpenses() != null ? 
+            budget.getUser().getExpenses().stream()
+                .filter(expense -> !expense.getDate().isAfter(LocalDate.now()))
+                .mapToDouble(Expense::getAmount).sum() : 0.0;
+        budget.setTotalExpense(totalExpense);
+        budget.setRemainingBalance(budget.getTotalBalance() - totalExpense);
     }
 
     @Override
@@ -54,7 +71,9 @@ public class BudgetService implements IBudgetService {
 
     public Double getRemainingBalance(Long userId) {
         Budget budget = budgetRepository.findByUserUserId(userId).orElseThrow(() -> new RuntimeException("Budget not found"));
-        double totalExpense = budget.getUser().getExpenses().stream().mapToDouble(Expense::getAmount).sum();
+        double totalExpense = budget.getUser().getExpenses().stream()
+        .filter(expense -> !expense.getDate().isAfter(LocalDate.now()))
+        .mapToDouble(Expense::getAmount).sum();
         budget.setTotalExpense(totalExpense);
         return budget.getTotalBalance() - totalExpense;
     }

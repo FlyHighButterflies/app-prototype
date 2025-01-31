@@ -38,6 +38,7 @@ public class BudgetController {
         return ResponseEntity.ok(budget);
     }
 
+    // working
     @GetMapping("/{id}/remaining-balance")
     public ResponseEntity<Double> getRemainingBalance(@PathVariable Long id) {
         Budget budget = budgetService.getBudgetById(id);

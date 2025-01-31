@@ -110,12 +110,31 @@ public class ExpenseService implements IExpenseService {
                                  e.getFrequency().equals(existingExpense.get().getFrequency()))
                     .collect(Collectors.toList());
 
+            LocalDate startDate = updatedExpense.getDate();
+            LocalDate endDate = startDate.plusYears(1); // Example: update recurring expenses for one year
+
             for (Expense expense : recurringExpenses) {
                 expense.setAmount(updatedExpense.getAmount());
                 expense.setCategory(updatedExpense.getCategory());
                 expense.setDescription(updatedExpense.getDescription());
-                expense.setDate(updatedExpense.getDate());
                 expense.setUser(updatedExpense.getUser());
+
+                switch (updatedExpense.getFrequency().toLowerCase()) {
+                    case "daily":
+                        expense.setDate(startDate);
+                        startDate = startDate.plusDays(1);
+                        break;
+                    case "weekly":
+                        expense.setDate(startDate);
+                        startDate = startDate.plusWeeks(1);
+                        break;
+                    case "monthly":
+                        expense.setDate(startDate);
+                        startDate = startDate.plusMonths(1);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Invalid frequency: " + updatedExpense.getFrequency());
+                }
             }
 
             expenseRepository.saveAll(recurringExpenses);

@@ -53,12 +53,6 @@ public class NotificationService implements INotificationService {
     }
 
     @Override
-    @Scheduled(cron = "0 0 8 * * ?")
-    public void sendRecurringNotifications() {
-        
-    }
-
-    @Override
     @Scheduled(cron = "0 0 20 * * ?")
     public void sendExpenseTrackingReminder() {
         List<User> users = userRepository.findAll();
@@ -72,6 +66,29 @@ public class NotificationService implements INotificationService {
                 user
             );
             notificationRepository.save(notification);
+        }
+    }
+
+    @Override
+    @Scheduled(cron = "0 0 9 * * ?")
+    public void sendRecurringExpenseReminder() {
+        List<User> users = userRepository.findAll();
+        LocalDate today = LocalDate.now();
+        for (User user : users) {
+            user.getExpenses().stream()
+                .filter(expense -> expense.isRecurring() && expense.getDate().equals(today))
+                .forEach(expense -> {
+                    String title = String.format("Recurring Expense Reminder: %s", expense.getDescription());
+                    Notification notification = new Notification(
+                        title,
+                        "You have a recurring expense due today. Please go to the app to review it.",
+                        true,
+                        false,
+                        today,
+                        user
+                    );
+                    notificationRepository.save(notification);
+                });
         }
     }
 
