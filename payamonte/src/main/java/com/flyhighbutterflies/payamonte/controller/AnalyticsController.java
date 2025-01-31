@@ -71,11 +71,11 @@ public class AnalyticsController {
   
 
     // Endpoint to fetch weekly expenses for a specific user (Sunday to Saturday)
-@GetMapping("/weekly/days")
-public ResponseEntity<List<Map<String, Object>>> getWeeklyExpensesByDays(@RequestParam Long userId) {
-    List<Map<String, Object>> dailyExpenses = analyticsService.getWeeklyExpensesByDays(userId); // Ensure type consistency
-    return ResponseEntity.ok(dailyExpenses); // Return the correct variable
-}
+    @GetMapping("/weekly/days")
+    public ResponseEntity<List<Map<String, Object>>> getWeeklyExpensesByDays(@RequestParam Long userId) {
+        List<Map<String, Object>> dailyExpenses = analyticsService.getWeeklyExpensesByDays(userId); // Ensure type consistency
+        return ResponseEntity.ok(dailyExpenses); // Return the correct variable
+    }
 
     // Endpoint to fetch monthly expenses for a specific user (January to December)
     @GetMapping("/monthly/all")

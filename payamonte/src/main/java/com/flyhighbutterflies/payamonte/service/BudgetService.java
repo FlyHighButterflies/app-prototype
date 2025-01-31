@@ -12,6 +12,7 @@ import java.time.LocalDate;
 // TO-DO:
 // Fix the code to dynamically display the user's remaining balance and total expenses in the user's budget table.
 // Check user model if the issue is there
+// FIXED
 
 @Service
 public class BudgetService implements IBudgetService {
@@ -29,11 +30,17 @@ public class BudgetService implements IBudgetService {
     @Override
     public Budget getBudgetById(Long id) {
         Budget budget = budgetRepository.findById(id).orElseThrow(() -> new RuntimeException("Budget not found"));
-        updateBudgetExpenses(budget);
+        double totalExpense = budget.getUser().getExpenses() != null ? 
+            budget.getUser().getExpenses().stream()
+                .filter(expense -> !expense.getDate().isAfter(LocalDate.now()))
+                .mapToDouble(Expense::getAmount).sum() : 0.0;
+        budget.setTotalExpense(totalExpense);
+        budget.setRemainingBalance(budget.getTotalBalance() - totalExpense);
         return budget;
     }
 
     // fix
+    // FIXED
     @Override
     public Budget createBudget(Budget budget) {
         if (budgetRepository.findByUserUserId(budget.getUser().getUserId()).isPresent()) {
@@ -54,7 +61,9 @@ public class BudgetService implements IBudgetService {
     }
 
     // fix
-    private void updateBudgetExpenses(Budget budget) {
+    // FIXED 
+    @Override
+    public void updateBudgetExpenses(Budget budget) {
         double totalExpense = budget.getUser().getExpenses() != null ? 
             budget.getUser().getExpenses().stream()
                 .filter(expense -> !expense.getDate().isAfter(LocalDate.now()))
@@ -69,6 +78,7 @@ public class BudgetService implements IBudgetService {
         budgetRepository.delete(budget);
     }
 
+    @Override
     public Double getRemainingBalance(Long userId) {
         Budget budget = budgetRepository.findByUserUserId(userId).orElseThrow(() -> new RuntimeException("Budget not found"));
         double totalExpense = budget.getUser().getExpenses().stream()

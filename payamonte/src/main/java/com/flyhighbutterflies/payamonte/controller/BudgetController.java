@@ -28,13 +28,13 @@ public class BudgetController {
         return budgets;
     }
 
+    // BUG: The method getBudgetById is not returning the correct remaining balance for the specific budget/user. 
+    // The method should only calculate the total expenses that are not after the current date.
+    // FIXED
     @GetMapping("/{id}")
     public ResponseEntity<Budget> getBudgetById(@PathVariable Long id) {
         Budget budget = budgetService.getBudgetById(id);
-        // Calculate and set the remaining balance for the specific budget/user
-        double totalExpense = budget.getUser().getExpenses().stream().mapToDouble(Expense::getAmount).sum();
-        budget.setTotalExpense(totalExpense);
-        budget.setRemainingBalance(budget.getTotalBalance() - totalExpense);
+        budgetService.updateBudgetExpenses(budget);
         return ResponseEntity.ok(budget);
     }
 
