@@ -9,6 +9,8 @@ import {
   StyleSheet,
 } from "react-native";
 import ExitIcon from "react-native-vector-icons/Feather";
+import RadioGroup from "react-native-radio-buttons-group";
+import RNPickerSelect from "react-native-picker-select";
 
 function AddEditExpenseModal({
   isEditing,
@@ -21,7 +23,20 @@ function AddEditExpenseModal({
   const [category, setCategory] = useState("");
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
+  const [selectedRadio, setSelectedRadio] = useState("no");
+  const radioOptions = [
+    { id: "no", label: "No", value: "no" },
+    { id: "yes", label: "Yes", value: "yes" },
+  ];
+  const [selectedDropDown, setSelectedDropDown] = useState(null);
+  const dropDownItems = [
+    { label: "Daily", value: "daily" },
+    { label: "Weekly", value: "weekly" },
+    { label: "Monthly", value: "monthly" },
+  ];
   const userId = useUserID();
+
+  console.log(selectedDropDown);
 
   useEffect(() => {
     if (itemToEdit) {
@@ -102,6 +117,35 @@ function AddEditExpenseModal({
                 style={style.inputField}
               />
             </View>
+            <View style={style.recurringInputContainer}>
+              <View style={style.recurringContainer}>
+                <Text style={style.inputLabel}>Recurring</Text>
+                <View style={style.radioButtonsContainer}>
+                  <RadioGroup
+                    radioButtons={radioOptions}
+                    onPress={(id) => {
+                      setSelectedRadio(id);
+                      if (id === "no") {
+                        setSelectedDropDown(null);
+                      }
+                    }}
+                    selectedId={selectedRadio}
+                    layout="row"
+                  />
+                </View>
+              </View>
+              <View style={style.frequencyContainer}>
+                <Text style={style.inputLabel}>Frequency</Text>
+                <View style={style.dropDownBackground}>
+                  <RNPickerSelect
+                    value={selectedDropDown}
+                    onValueChange={setSelectedDropDown}
+                    items={dropDownItems}
+                    disabled={selectedRadio === "no"}
+                  />
+                </View>
+              </View>
+            </View>
           </View>
           <View style={style.buttonContainer}>
             <TouchableOpacity
@@ -131,7 +175,7 @@ const style = StyleSheet.create({
     padding: 15,
     paddingHorizontal: 25,
     width: 390,
-    height: 512,
+    height: 595,
     backgroundColor: "#ededeb",
     borderRadius: 30,
   },
@@ -146,6 +190,7 @@ const style = StyleSheet.create({
   },
   inputContainer: {
     width: "100%",
+    height: 81,
     gap: 3,
   },
   inputLabel: {
@@ -156,6 +201,32 @@ const style = StyleSheet.create({
     borderWidth: 1,
     height: 56,
     padding: 15,
+    borderRadius: 20,
+    backgroundColor: "white",
+  },
+  recurringInputContainer: {
+    flexDirection: "row",
+    width: "100%",
+    height: 84,
+  },
+  recurringContainer: {
+    flex: 1,
+    justifyContent: "center",
+    gap: 3,
+    borderColor: "blue",
+  },
+  radioButtonsContainer: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  frequencyContainer: {
+    flex: 1.3,
+    justifyContent: "center",
+    gap: 3,
+    borderColor: "green",
+  },
+  dropDownBackground: {
+    borderWidth: 1,
     borderRadius: 20,
     backgroundColor: "white",
   },
