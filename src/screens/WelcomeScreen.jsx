@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
-import PiamontrackLogo from "../assets/images/PiamonTrackLogo.png";
+import PiamontrackLogo from "../assets/images/PiamonTrack.png";
 import { useNavigation } from "@react-navigation/native";
 
 function WelcomeScreen() {

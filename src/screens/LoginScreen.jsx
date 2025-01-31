@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
-import PiamontrackLogo from "../assets/images/PiamonTrackLogo.png";
+import PiamontrackLogo from "../assets/images/PiamonTrack.png";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useSetUserID, useUserID } from "context/UserContext";
 import axios from "axios";
