@@ -11,20 +11,32 @@ import java.time.LocalDate;
 public class Expense {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "expense_id")
     private Long id;
 
+    @Column(name = "amount")
     private Double amount;
+
+    @Column(name = "category", length = 128)
     private String category;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @Column(name = "date")
     private LocalDate date;
 
+    @Column(name = "description", length = 256)
     private String description;
+
+    @Column(name = "is_recurring", nullable = true)
+    private Boolean isRecurring;
+
+    @Column(name = "frequency", length = 32)
+    private String frequency;
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnoreProperties({"firstName", "middleName", "lastName", "email", "datetimeCreated", "expenses", "budgets, notifications"})
+    @JsonIgnoreProperties({"firstName", "middleName", "lastName", "email", "datetimeCreated", "expenses", "budgets", "notifications"})
     private User user;
 
     // Constructors
@@ -77,6 +89,22 @@ public class Expense {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Boolean isRecurring() {
+        return isRecurring;
+    }
+
+    public void setIsRecurring(Boolean isRecurring) {
+        this.isRecurring = isRecurring;
+    }
+
+    public String getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(String frequency) {
+        this.frequency = frequency;
     }
 
     public User getUser() {

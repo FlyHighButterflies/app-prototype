@@ -74,4 +74,54 @@ public class ExpenseController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    // Create a recurring expense
+    @PostMapping("/recurring")
+    public ResponseEntity<Void> createRecurringExpense(@RequestBody Expense expense, @RequestParam String frequency) {
+        try {
+            if (expense.getUser() == null || expense.getUser().getUserId() == null) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            expenseService.createRecurringExpense(expense, frequency);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // Get all recurring expenses
+    @GetMapping("/recurring")
+    public ResponseEntity<List<Expense>> getRecurringExpenses() {
+        try {
+            List<Expense> expenses = expenseService.getRecurringExpenses();
+            return new ResponseEntity<>(expenses, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // Update a recurring expense
+    @PutMapping("/recurring/{id}")
+    public ResponseEntity<Void> updateRecurringExpense(@PathVariable Long id, @RequestBody Expense expense) {
+        try {
+            if (expense.getUser() == null || expense.getUser().getUserId() == null) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            expenseService.updateRecurringExpense(id, expense);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    // Delete a recurring expense
+    @DeleteMapping("/recurring/{id}")
+    public ResponseEntity<Void> deleteRecurringExpense(@PathVariable Long id) {
+        try {
+            expenseService.deleteRecurringExpense(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

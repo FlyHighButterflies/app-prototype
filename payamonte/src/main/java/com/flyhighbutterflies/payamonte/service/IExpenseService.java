@@ -10,4 +10,8 @@ public interface IExpenseService {
     List<Expense> getAllExpenses();
     Optional<Expense> getExpenseById(Long id);
     void deleteExpense(Long id);
+    void createRecurringExpense(Expense expense, String frequency);
+    void deleteRecurringExpense(Long id);
+    public void updateRecurringExpense(Long id, Expense updatedExpense);
+    List<Expense> getRecurringExpenses();
 }

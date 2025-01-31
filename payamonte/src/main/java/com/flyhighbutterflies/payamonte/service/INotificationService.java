@@ -12,5 +12,8 @@ public interface INotificationService {
     List<Notification> getAllNotifications();
     Optional<Notification> getNotificationById(Long id);
     ResponseEntity<Notification> updateNotification(Long id, Notification notificationDetails);
+    List<Notification> getNotificationsByUserId(Long userId);
+    public void sendRecurringNotifications();
     void deleteNotification(Long id);
+    void sendExpenseTrackingReminder();
 }
