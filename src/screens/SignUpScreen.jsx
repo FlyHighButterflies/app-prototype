@@ -64,6 +64,24 @@ function SignUpScreen() {
     }
   }
 
+  // async function setNotifications(userId) {
+  //   const notificationObject = {
+  //     push_notification: false,
+  //     in_app_notification: false,
+  //     user: {
+  //       userId,
+  //     },
+  //   };
+  //   try {
+  //     const res = await axios.post(
+  //       "http://10.0.2.2:8080/api/budgets",
+  //       notificationObject
+  //     );
+  //   } catch (err) {
+  //     console.log("Error posting notifications: ", err);
+  //   }
+  // }
+
   useEffect(() => {
     if (response === "Sign-Up successful!") {
       const fetchUserID = async () => {
@@ -71,6 +89,7 @@ function SignUpScreen() {
           const res = await axios.get("http://10.0.2.2:8080/api/users");
           const userID = res.data.find((user) => user.email === email);
           createBudget(userID.userId);
+          // setNotifications(userID.userId);
         } catch (err) {
           setError("Failed to fetch user ID");
           console.log("Error fetching user ID:", err.message);

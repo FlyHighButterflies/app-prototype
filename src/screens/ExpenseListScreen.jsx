@@ -16,7 +16,11 @@ import LeftArrowIcon from "react-native-vector-icons/FontAwesome6";
 import ToastNotification from "components/ToastNotification";
 import SwitchSelector from "react-native-switch-selector";
 
-function DeleteExpenseModal({ isDeleting, setIsDeleting, handleDelete }) {
+function DeleteExpenseModal({
+  isDeleting,
+  setIsDeleting,
+  handleDelete,
+}) {
   return (
     <Modal visible={isDeleting} transparent={true}>
       <View style={style.background}>
@@ -64,7 +68,7 @@ function ExpenseListScreen({ navigation }) {
     }
   });
 
-  console.log(itemToEdit)
+  console.log(itemToEdit);
 
   useEffect(() => {
     fetchExpenses();
@@ -122,7 +126,13 @@ function ExpenseListScreen({ navigation }) {
         return;
       }
 
-      await axios.delete(`http://10.0.2.2:8080/api/expenses/${itemIdToEdit}`);
+      if (itemToEdit.isRecurring) {
+        await axios.delete(
+          `http://10.0.2.2:8080/api/expenses/recurring/${itemIdToEdit}`
+        );
+      } else {
+        await axios.delete(`http://10.0.2.2:8080/api/expenses/${itemIdToEdit}`);
+      }
 
       setTransactions((prev) =>
         prev.filter((item) => item.id !== itemIdToEdit)

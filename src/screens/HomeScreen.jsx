@@ -104,6 +104,15 @@ function HomeScreen() {
   const day = d.toLocaleString("default", { weekday: "long" });
   const date = d.getDate();
   const month = d.toLocaleString("default", { month: "long" });
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const filteredTransactions = transactions.filter((item) => {
+    const itemDate = new Date(item.date);
+    itemDate.setHours(0, 0, 0, 0);
+    return itemDate.getTime() === today.getTime(); // Compare timestamps
+  });
+
+  console.log(filteredTransactions);
 
   useEffect(() => {
     fetchExpenses();
@@ -121,6 +130,7 @@ function HomeScreen() {
         const response = await axios.get(
           `http://10.0.2.2:8080/api/budgets/${userId}`
         );
+        console.log(response.data);
         setBudget(response.data.totalBalance);
         setTotalExpense(response.data.totalExpense);
         setBalance(response.data.remainingBalance);
@@ -305,7 +315,7 @@ function HomeScreen() {
             }}
           >
             {/* <View style={style.transactionsListInnerContainer}> */}
-            {recentTransactions.map((item) => {
+            {filteredTransactions.map((item) => {
               return <ExpenseItem key={item.id} item={item} />;
             })}
             {/* </View> */}
