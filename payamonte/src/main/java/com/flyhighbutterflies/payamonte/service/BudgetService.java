@@ -10,7 +10,7 @@ import java.util.List;
 import java.time.LocalDate;
 
 // TO-DO:
-// Fix the code to dynamically display the user's remaining balance and total expenses in the user's budget table.
+// Fix the code to dynamically display the user's remaining balance and total expenses in the user's budget table. 
 // Check user model if the issue is there
 
 @Service
@@ -60,7 +60,10 @@ public class BudgetService implements IBudgetService {
                 .filter(expense -> !expense.getDate().isAfter(LocalDate.now()))
                 .mapToDouble(Expense::getAmount).sum() : 0.0;
         budget.setTotalExpense(totalExpense);
+        System.out.println(totalExpense);
         budget.setRemainingBalance(budget.getTotalBalance() - totalExpense);
+
+        budgetRepository.save(budget);
     }
 
     @Override
