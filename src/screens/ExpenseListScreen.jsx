@@ -14,6 +14,7 @@ import { useUserID } from "context/UserContext";
 import axios from "axios";
 import LeftArrowIcon from "react-native-vector-icons/FontAwesome6";
 import ToastNotification from "components/ToastNotification";
+import SwitchSelector from "react-native-switch-selector";
 
 function DeleteExpenseModal({ isDeleting, setIsDeleting, handleDelete }) {
   return (
@@ -48,7 +49,22 @@ function ExpenseListScreen({ navigation }) {
   const [itemToEdit, setItemToEdit] = useState({});
   const [itemIdToEdit, setItemIdToEdit] = useState(null);
   const [isOnNotifications, setIsOnNotifications] = useState(false);
+  const [selectedOption, setSelectedOption] = useState("previousExpenses");
   const userId = useUserID();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const filteredTransactions = transactions.filter((item) => {
+    const itemDate = new Date(item.date);
+    itemDate.setHours(0, 0, 0, 0); // Normalize the item's date
+
+    if (selectedOption === "previousExpenses") {
+      return itemDate <= today; // Include past and today's transactions
+    } else {
+      return itemDate > today; // Include future transactions
+    }
+  });
+
+  console.log(itemToEdit)
 
   useEffect(() => {
     fetchExpenses();
@@ -139,26 +155,41 @@ function ExpenseListScreen({ navigation }) {
           <Text style={style.headerText}>Expense List</Text>
         </View>
       </View>
+      <View style={style.switchSelectorContainer}>
+        <SwitchSelector
+          options={[
+            { label: "Previous Expenses", value: "previousExpenses" },
+            { label: "Upcoming Expenses", value: "upcomingExpenses" },
+          ]}
+          initial={0}
+          onPress={(value) => setSelectedOption(value)}
+          buttonColor="#800000"
+          backgroundColor="white"
+          textColor="#800000"
+          selectedColor="white"
+          borderRadius={10}
+          textStyle={{ fontWeight: "bold" }}
+          selectedTextStyle={{ fontWeight: "bold" }}
+        />
+      </View>
       <ScrollView
         style={style.expenseListOuterContainer}
         showsVerticalScrollIndicator={false}
       >
         <View style={style.expenseListInnerContainer}>
-          {transactions.map((item) => {
-            return (
-              <ExpenseItem
-                style={style.expenseItemContainer}
-                key={item.id}
-                id={item.id}
-                item={item}
-                editable={true}
-                setIsEditing={setIsEditing}
-                setIsDeleting={setIsDeleting}
-                setItemIdToEdit={setItemIdToEdit}
-                setItemToEdit={setItemToEdit}
-              />
-            );
-          })}
+          {filteredTransactions.map((item) => (
+            <ExpenseItem
+              style={style.expenseItemContainer}
+              key={item.id}
+              id={item.id}
+              item={item}
+              editable={true}
+              setIsEditing={setIsEditing}
+              setIsDeleting={setIsDeleting}
+              setItemIdToEdit={setItemIdToEdit}
+              setItemToEdit={setItemToEdit}
+            />
+          ))}
         </View>
       </ScrollView>
 
@@ -167,6 +198,8 @@ function ExpenseListScreen({ navigation }) {
         setIsEditing={setIsEditing}
         onSave={editExpense}
         itemToEdit={itemToEdit}
+        setItemIdToEdit={setItemIdToEdit}
+        setItemToEdit={setItemToEdit}
         buttonText={"Save"}
       />
       <DeleteExpenseModal
@@ -204,11 +237,15 @@ const style = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 22,
   },
+  switchSelectorContainer: {
+    width: 391,
+    marginTop: 15,
+  },
   expenseListOuterContainer: {
     marginTop: 20,
   },
   expenseListInnerContainer: {
-    gap: 15,
+    // gap: 15,
   },
   expenseItemContainer: {
     width: 400,
