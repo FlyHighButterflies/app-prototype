@@ -9,5 +9,7 @@ public interface IBudgetService {
     Budget getBudgetById(Long id);
     Budget createBudget(Budget budget);
     Budget updateBudget(Long id, Budget budgetDetails);
+    void updateBudgetExpenses(Budget budget);
     void deleteBudget(Long id);
+    Double getRemainingBalance(Long userId);
 }
