@@ -60,6 +60,10 @@ function AddEditExpenseModal({
     setDescription("");
     setItemToEdit({});
     setItemIdToEdit(null);
+    if(itemToEdit){
+      setItemToEdit({});
+      setItemIdToEdit(null);
+    }
   }
 
   const handleAddOrEdit = () => {
