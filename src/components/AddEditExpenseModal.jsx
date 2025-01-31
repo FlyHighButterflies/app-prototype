@@ -17,6 +17,8 @@ function AddEditExpenseModal({
   setIsEditing,
   onSave,
   itemToEdit,
+  setItemToEdit,
+  setItemIdToEdit,
   buttonText,
 }) {
   const [amount, setAmount] = useState("");
@@ -56,6 +58,8 @@ function AddEditExpenseModal({
     setCategory("");
     setDate("");
     setDescription("");
+    setItemToEdit({});
+    setItemIdToEdit(null);
   }
 
   const handleAddOrEdit = () => {
