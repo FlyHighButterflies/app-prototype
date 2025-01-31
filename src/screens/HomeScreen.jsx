@@ -248,7 +248,12 @@ function HomeScreen() {
           <View style={style.moneyContainer}>
             <View style={style.balanceContainer}>
               <Text style={style.balanceText}>Your Balance</Text>
-              <Text style={style.balanceAmountText}>P{balance.toFixed(2)}</Text>
+              <Text style={style.balanceAmountText}>
+                P
+                {Number(balance.toFixed(2)).toLocaleString("en", {
+                  minimumFractionDigits: 2,
+                })}
+              </Text>
               <TouchableOpacity
                 onPress={() => setIsEditBudget(true)}
                 style={style.editBudgetIcon}
@@ -259,7 +264,10 @@ function HomeScreen() {
             <View style={style.expenseContainer}>
               <Text style={style.expenseText}>Total Expense</Text>
               <Text style={style.expenseAmountText}>
-                P{totalExpense.toFixed(2)}
+                P
+                {Number(totalExpense.toFixed(2)).toLocaleString("en", {
+                  minimumFractionDigits: 2,
+                })}
               </Text>
             </View>
           </View>
