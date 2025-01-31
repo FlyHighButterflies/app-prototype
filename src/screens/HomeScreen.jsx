@@ -60,7 +60,6 @@ function EditBudgetModal({
                 onPress={() => {
                   const parsedMoney = parseFloat(money);
                   if (!isNaN(parsedMoney) && /^\d+(\.\d+)?$/.test(money)) {
-                    console.log(`IS SETTING BUDGET`);
                     setBudget(parsedMoney ?? budget);
                     putBudget(parsedMoney ?? budget);
                   }
@@ -121,29 +120,18 @@ function HomeScreen() {
     const fetchUpdatedValues = async () => {
       try {
         const response = await axios.get(
-          `http://10.0.2.2:8080/api/users/${userId}`
-        ); // Adjust endpoint
-        setBudget(response.data.budgets[0].totalBalance);
-        setTotalExpense(response.data.budgets[0].totalExpense);
-        setBalance(response.data.budgets[0].remainingBalance);
+          `http://10.0.2.2:8080/api/budgets/${userId}`
+        );
+        setBudget(response.data.totalBalance);
+        setTotalExpense(response.data.totalExpense);
+        setBalance(response.data.remainingBalance);
       } catch (error) {
         console.error("Error fetching updated summary:", error);
       }
     };
 
     fetchUpdatedValues();
-  }, [transactions, budget, currentTotalExpense]);
-
-  useEffect(() => {
-    if (Array.isArray(transactions)) {
-      const total = transactions.reduce(
-        (total, item) => total + item.amount,
-        0
-      );
-      setCurrentTotalExpense(total);
-      editExpense(total);
-    }
-  }, [transactions]);
+  }, [transactions, budget]);
 
   const fetchExpenses = async () => {
     try {
@@ -220,26 +208,6 @@ function HomeScreen() {
     }
   }
 
-  async function editExpense(newExpense) {
-    const defaultBudget = {
-      totalBalance: budget,
-      totalExpense: newExpense,
-      user: {
-        userId,
-      },
-    };
-
-    try {
-      const res = await axios.put(
-        `http://10.0.2.2:8080/api/budgets/${userId}`,
-        defaultBudget
-      );
-      console.log("Budget successfully edited: ", res.data);
-    } catch (err) {
-      console.log("Error editing budget: ", err);
-    }
-  }
-
   return (
     <View>
       <StatusBar barStyle="dark-content" backgroundColor="white" />
@@ -300,7 +268,6 @@ function HomeScreen() {
           isEditing={isAddExpense}
           setIsEditing={setIsAddExpense}
           onSave={addExpense}
-          editExpense={editExpense}
           buttonText="Add"
         />
         <EditBudgetModal

@@ -38,8 +38,8 @@ function AddEditExpenseModal({
   ];
   const userId = useUserID();
 
-  console.log(`Selected radio: ${selectedRadioValue}`);
-  console.log(`Selected dropdown: ${selectedDropDown}`);
+  // console.log(`Selected radio: ${selectedRadioValue}`);
+  // console.log(`Selected dropdown: ${selectedDropDown}`);
 
   useEffect(() => {
     if (itemToEdit) {
